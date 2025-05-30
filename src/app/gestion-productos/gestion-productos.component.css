@@ -1,0 +1,77 @@
+/* Contenedor principal */
+.gestion-productos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Contenedor del formulario */
+.formulario {
+  width: 100%;
+  overflow-x: auto;
+  padding: 0;
+  background-color: transparent;
+}
+
+/* Formulario en una sola línea horizontal */
+.form-horizontal-productos {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 20px;
+  min-width: 900px; /* 👉 Fuerza el scroll si no cabe */
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Grupos de formularios */
+.form-horizontal-productos .form-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+/* Textarea más largo si se desea */
+.form-horizontal-productos .form-group.full-width {
+  min-width: 300px;
+}
+
+/* Botón */
+.form-horizontal-productos button[type="submit"] {
+  align-self: flex-end;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Mensaje de error */
+.message {
+  margin-top: 10px;
+  font-size: 14px;
+}
+.message.error {
+  color: #d9534f;
+}
+
+/* Estilos básicos */
+input,
+textarea,
+select {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Lista */
+.lista {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}

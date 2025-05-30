@@ -1,0 +1,96 @@
+<form (ngSubmit)="guardarUsuario()" class="usuario-form" novalidate>
+
+  <div>
+    <label for="nombre">Nombre:</label>
+    <input id="nombre" type="text" name="nombre" [(ngModel)]="usuarioSeleccionado.nombre"
+      placeholder="Ingresa el nombre" required autocomplete="off" />
+  </div>
+
+  <div>
+    <label for="correo">Correo:</label>
+    <input id="correo" type="email" name="correo" [(ngModel)]="usuarioSeleccionado.correo"
+      placeholder="usuario@ejemplo.com" required autocomplete="email" />
+  </div>
+
+  <div>
+    <label for="telefono">Teléfono:</label>
+    <input id="telefono" type="text" name="telefono" [(ngModel)]="usuarioSeleccionado.telefono"
+      placeholder="Ingresa el teléfono" />
+  </div>
+
+  <div>
+    <label for="rol">Rol:</label>
+    <select id="rol" name="rol" [(ngModel)]="usuarioSeleccionado.rol" required>
+      <option value="" disabled selected>Selecciona un rol</option>
+      <option value="cliente">Cliente</option>
+      <option value="admin">Admin</option>
+    </select>
+  </div>
+
+  <!-- Campo de contraseña solo si es nuevo usuario -->
+  <div *ngIf="!usuarioSeleccionado._id">
+    <label for="contrasena">Contraseña:</label>
+    <input id="contrasena" type="password" name="contrasena" [(ngModel)]="usuarioSeleccionado.contrasena"
+      placeholder="Contraseña" required minlength="6" />
+  </div>
+
+  <!-- Campo para avatar -->
+  <div>
+    <label for="avatar">Avatar:</label>
+    <input id="avatar" type="file" (change)="onFileSelected($event)" accept="image/*" />
+  </div>
+
+  <div class="form-buttons">
+    <button type="submit"
+      [disabled]="!usuarioSeleccionado.nombre || !usuarioSeleccionado.correo || !usuarioSeleccionado.rol || (!usuarioSeleccionado._id && !usuarioSeleccionado.contrasena)">
+      {{ usuarioSeleccionado._id ? 'Actualizar' : 'Crear' }}
+    </button>
+    <button type="button" class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+  </div>
+</form>
+
+<!-- Tarjetas de usuario -->
+<ul class="lista-usuarios">
+  <li *ngFor="let usuario of usuariosPaginados()" class="usuario-card">
+
+    <!-- Imagen del avatar o avatar por defecto -->
+    <ng-container *ngIf="usuario.avatarUrl; else avatarPlaceholder">
+      <img [src]="'http://localhost:3000' + usuario.avatarUrl" class="usuario-avatar" alt="{{ usuario.nombre }}" />
+    </ng-container>
+    <ng-template #avatarPlaceholder>
+      <div class="usuario-avatar"></div>
+    </ng-template>
+
+    <div class="usuario-info">
+      <h3>{{ usuario.nombre }}</h3>
+      <p>{{ usuario.correo }}</p>
+      <p><strong>Rol:</strong> {{ usuario.rol }}</p>
+      <p *ngIf="usuario.telefono"><strong>Teléfono:</strong> {{ usuario.telefono }}</p>
+    </div>
+
+    <div class="usuario-actions">
+      <button (click)="editarUsuario(usuario)" [attr.aria-label]="'Editar usuario ' + usuario.nombre">
+        Editar
+      </button>
+      <button (click)="eliminarUsuario(usuario._id!)" [attr.aria-label]="'Eliminar usuario ' + usuario.nombre">
+        Eliminar
+      </button>
+    </div>
+
+    <!-- Campo para actualizar avatar individual -->
+    <div class="actualizar-avatar">
+      <input type="file" style="display: none" accept="image/*" [id]="'fileInput-' + usuario._id"
+        (change)="cambiarAvatar($event, usuario)" />
+      <label [for]="'fileInput-' + usuario._id" class="cambiar-avatar-label">
+        Cambiar avatar
+      </label>
+    </div>
+  </li>
+</ul>
+<app-paginador
+  [totalItems]="usuarios.length"
+  [pageSize]="tamanioPagina"
+  [currentPage]="paginaActual"
+  (pageChange)="onPageChange($event)">
+</app-paginador>
+

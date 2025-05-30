@@ -1,0 +1,60 @@
+<div class="contenedor-movimientos">
+    <h2>📦 Movimientos del Producto</h2>
+
+    <p *ngIf="stockActual !== null" class="stock-info">
+        Stock actual: <strong>{{ stockActual }}</strong>
+    </p>
+
+    <div *ngIf="cargando" class="loading">Cargando movimientos...</div>
+
+    <form (ngSubmit)="filtrarPorFechas()" class="filtro-fechas" novalidate>
+        <label>
+            Desde:
+            <input type="date" [(ngModel)]="fechaInicio" name="fechaInicio" />
+        </label>
+        <label>
+            Hasta:
+            <input type="date" [(ngModel)]="fechaFin" name="fechaFin" />
+        </label>
+        <button type="submit" [disabled]="cargando">Filtrar</button>
+        <button type="button" (click)="limpiarFiltro()" [disabled]="cargando">Limpiar</button>
+    </form>
+
+    <p class="error" *ngIf="errorFecha">{{ errorFecha }}</p>
+
+    <div class="acciones-exportar">
+        <button (click)="exportarExcel()" [disabled]="movimientos.length === 0">Exportar a Excel</button>
+        <button (click)="exportarPDF()" [disabled]="movimientos.length === 0">Exportar a PDF</button>
+    </div>
+
+    <table *ngIf="!cargando && movimientos.length > 0" class="tabla">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Cantidad</th>
+                <th>Observación</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let mov of movimientosPaginados">
+                <td>{{ mov.fecha | date: 'short' }}</td>
+                <td>{{ mov.tipo }}</td>
+                <td>{{ mov.cantidad }}</td>
+                <td>{{ mov.observacion || '-' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <app-paginador *ngIf="movimientos.length > 0" [totalItems]="movimientos.length" [pageSize]="pageSize"
+        [currentPage]="currentPage" (pageChange)="actualizarPagina($event)">
+    </app-paginador>
+
+
+    <div class="grafico" *ngIf="movimientos.length > 0">
+        <canvas id="graficoStock"></canvas>
+    </div>
+
+
+    <p *ngIf="!cargando && movimientos.length === 0">No hay movimientos registrados.</p>
+</div>

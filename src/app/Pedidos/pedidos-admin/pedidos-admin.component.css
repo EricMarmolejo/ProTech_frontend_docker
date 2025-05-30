@@ -1,0 +1,168 @@
+.pedidos-admin-container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+  color: #f5f5f5;
+  background-color: #1e1e2f;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #3b82f6; /* azul brillante */
+  font-size: 1.8rem;
+}
+
+.estado-cargando,
+.estado-error,
+.estado-vacio {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  color: #a1a1aa;
+}
+
+.tarjetas-contenedor {
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.tarjeta-pedido {
+  background: #2b2b3d;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  padding: 1.2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 5px solid #3b82f6;
+}
+
+.tarjeta-pedido:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.tarjeta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  color: #60a5fa; /* azul claro */
+  font-weight: 600;
+}
+
+.pedido-id {
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: #93c5fd;
+}
+
+.pedido-estado {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  text-align: center;
+  background-color: #334155;
+  color: #e2e8f0;
+}
+
+/* Estados coherentes con tema oscuro */
+.pendiente {
+  background-color: #facc15;
+  color: #1f2937;
+}
+
+.enviado {
+  background-color: #38bdf8;
+  color: #0f172a;
+}
+
+.entregado {
+  background-color: #22c55e;
+  color: #052e16;
+}
+
+.cancelado {
+  background-color: #ef4444;
+  color: #1e1b1b;
+}
+
+.tarjeta-cuerpo p {
+  margin: 0.4rem 0;
+  color: #e2e8f0;
+}
+
+.tarjeta-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.tarjeta-footer .btn {
+  padding: 0.45rem 0.9rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+/* Botón Ver detalle */
+.btn-info {
+  background-color: #2563eb;
+  color: white;
+}
+
+.btn-info:hover {
+  background-color: #1d4ed8;
+  transform: scale(1.03);
+}
+
+/* Botón Cambiar estado */
+.btn-warning {
+  background-color: #facc15;
+  color: #1f2937;
+}
+
+.btn-warning:hover {
+  background-color: #eab308;
+  transform: scale(1.03);
+}
+
+/* Botón Eliminar */
+.btn-danger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+  transform: scale(1.03);
+}
+.boton.cambiar-estado {
+  background-color: #3b82f6; /* azul brillante */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.1s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.5);
+}
+
+.boton.cambiar-estado:hover {
+  background-color: #2563eb; /* azul más oscuro */
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.7);
+}
+
+.boton.cambiar-estado:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.9);
+}

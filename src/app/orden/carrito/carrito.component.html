@@ -1,0 +1,58 @@
+<div class="carrito-container" *ngIf="items$ | async as items; else vacio">
+    <h2>Tu carrito</h2>
+
+    <table class="tabla-carrito">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of itemsPaginados()">
+                <td>{{ item.producto.nombre }}</td>
+                <td>{{ item.producto.precio | currency }}</td>
+                <td>
+                    <div class="cantidad-control">
+                        <button [disabled]="item.cantidad >= item.producto.stock" (click)="cambiarCantidad(item, 1)"
+                            [class.disabled]="item.cantidad >= item.producto.stock">
+                            +
+                        </button> <input type="number" [value]="item.cantidad"
+                            (change)="actualizarCantidad(item, $event)" min="1" [max]="item.producto.stock" />
+                        <button [disabled]="item.cantidad <= 1" (click)="cambiarCantidad(item, -1)"
+                            [class.disabled]="item.cantidad <= 1">
+                            −
+                        </button>
+                    </div>
+                </td>
+                <td>{{ item.producto.precio * item.cantidad | currency }}</td>
+                <td>
+                    <button class="btn-eliminar" (click)="eliminarDelCarrito(item)">Eliminar</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <app-paginador
+  [totalItems]="items.length"
+  [pageSize]="tamanioPagina"
+  [currentPage]="paginaActual"
+  (pageChange)="paginaActual = $event">
+</app-paginador>
+
+
+    <div class="acciones-carrito">
+        <h3>Total: {{ total | currency }}</h3>
+        <div class="botones-acciones">
+            <button class="btn-vaciar" (click)="vaciar()">Vaciar carrito</button>
+            <button class="btn-secundario" routerLink="dashboard/productos">Seguir comprando</button>
+            <button class="btn-principal" (click)="irAResumen()">Finalizar compra</button>
+        </div>
+    </div>
+</div>
+
+<ng-template #vacio>
+    <p class="carrito-vacio">Tu carrito está vacío.</p>
+</ng-template>

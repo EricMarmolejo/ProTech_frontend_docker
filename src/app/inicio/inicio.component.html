@@ -1,0 +1,96 @@
+<section class="bienvenida">
+  <h1 class="titulo-bienvenida">Bienvenido, {{ usuario }}!</h1>
+</section>
+
+<div *ngIf="isAdmin(); else userView" class="admin-panel">
+  <section class="panel-header">
+    <h2>Panel de Administración</h2>
+    <p>Administra el catálogo, gestiona usuarios y revisa reportes fácilmente.</p>
+  </section>
+
+  <section class="tarjetas-admin">
+    <article class="tarjeta">
+      <h3>Usuarios</h3>
+      <p>Administra los permisos y datos de los usuarios.</p>
+      <a routerLink="/dashboard/usuarios" class="boton-link">Ir a Gestión de Usuarios</a>
+    </article>
+
+    <article class="tarjeta">
+      <h3>Productos</h3>
+      <p>Gestiona el inventario, edita y agrega productos nuevos.</p>
+      <a routerLink="/dashboard/productos" class="boton-link">Ir a Productos</a>
+    </article>
+
+    <article class="tarjeta">
+      <h3>Reportes</h3>
+      <p>Consulta estadísticas e informes detallados.</p>
+      <a routerLink="/reportes" class="boton-link">Ver Reportes</a>
+    </article>
+
+    <article class="tarjeta">
+      <h3>Categorias</h3>
+      <p>Mira o agrega mas categorias para el catalogo</p>
+      <a routerLink="/dashboard/categorias" class="boton-link">Ir a categorias</a>
+    </article>
+  </section>
+</div>
+
+<ng-template #userView>
+  <section class="destacados-header mejorado">
+    <h2 class="titulo-destacados animado">
+      ✨ <span class="destacado-color">Productos</span> Destacados
+    </h2>
+    <p class="descripcion-destacados">
+      Descubre nuestras mejores selecciones, elegidas especialmente para ti.
+    </p>
+    <hr class="separador-destacados" />
+  </section>
+
+
+  <div class="carousel-container" *ngIf="productosDestacados.length">
+    <div class="carousel-track" [style.transform]="'translateX(-' + currentIndex * (100 / 2) + '%)'">
+      <div class="carousel-item" *ngFor="let producto of productosDestacados">
+        <div class="product-card">
+          <!-- contenido producto igual al que ya tienes -->
+          <div class="imagen-contenedor">
+            <img [src]="'http://localhost:3000/uploads/' + producto.imagen" [alt]="producto.nombre"
+              class="producto-img" />
+          </div>
+
+          <h3 class="nombre">{{ producto.nombre }}</h3>
+
+          <p><strong>Precio:</strong> {{ producto.precio | currency:'COP':'symbol' }}</p>
+
+          <p [ngClass]="{
+            'stock-bajo': producto.stock <= 5,
+            'stock-medio': producto.stock > 5 && producto.stock <= 20,
+            'stock-alto': producto.stock > 20
+          }">
+            <strong>Disponibilidad:</strong>
+            <span *ngIf="producto.stock === 0">Sin stock ❌</span>
+            <span *ngIf="producto.stock > 0 && producto.stock <= 5">Muy bajo 🔴</span>
+            <span *ngIf="producto.stock > 5 && producto.stock <= 20">Disponible 🟡</span>
+            <span *ngIf="producto.stock > 20">En stock 🟢</span>
+          </p>
+
+          <div class="stock-barra">
+            <div class="relleno" [ngClass]="{
+              'alto': producto.stock > 20,
+              'medio': producto.stock <= 20 && producto.stock > 5,
+              'bajo': producto.stock <= 5
+            }" [style.width.%]="producto.stock > 100 ? 100 : producto.stock"></div>
+          </div>
+
+          <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+
+          <div class="buttons">
+            <button class="btn primary" (click)="verDetalles(producto._id)">Ver detalles</button>
+            <button class="btn" (click)="agregarAlCarrito(producto)">Agregar al carrito</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</ng-template>

@@ -1,0 +1,42 @@
+<div class="pedidos-admin-container">
+    <h2>Mis Pedidos</h2>
+
+    <div *ngIf="cargando" class="estado-cargando">Cargando pedidos...</div>
+    <div *ngIf="error" class="estado-error">{{ error }}</div>
+
+    <div *ngIf="!cargando && pedidos.length > 0" class="tarjetas-contenedor">
+        <div *ngFor="let pedido of pedidosPaginados()" class="tarjeta-pedido">
+            <div class="tarjeta-header">
+                <span class="pedido-id">#{{ pedido._id | slice:0:8 }}</span>
+                <span class="pedido-estado" [ngClass]="pedido.estado">{{ pedido.estado }}</span>
+            </div>
+
+            <div class="tarjeta-cuerpo">
+                <p><strong>Dirección:</strong> {{ pedido.direccion?.direccion || 'Sin dirección' }}</p>
+                <p><strong>Total:</strong> ${{ pedido.total | number: '1.2-2' }}</p>
+                <p><strong>Fecha:</strong> {{ pedido.fecha | date: 'short' }}</p>
+            </div>
+
+            <div class="tarjeta-footer">
+                <button (click)="verDetalle(pedido)" class="btn btn-info">Ver detalle</button>
+                <button *ngIf="pedido.estado === 'pendiente'" (click)="cancelarPedido(pedido)"
+                    class="btn btn-danger">Cancelar pedido</button>
+                <button *ngIf="pedido.estado === 'enviado'" (click)="confirmarEntrega(pedido)" class="btn btn-success">
+                    Confirmar entrega
+                </button>
+
+            </div>
+        </div>
+    </div>
+    <app-paginador
+  [totalItems]="pedidos.length"
+  [pageSize]="tamanioPagina"
+  [currentPage]="paginaActual"
+  (pageChange)="paginaActual = $event">
+</app-paginador>
+
+    <div *ngIf="!cargando && pedidos.length === 0" class="estado-vacio">
+        No tienes pedidos registrados.
+    </div>
+</div>
+

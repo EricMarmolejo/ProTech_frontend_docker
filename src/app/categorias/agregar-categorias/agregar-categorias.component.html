@@ -1,0 +1,35 @@
+<div class="form-wrapper">
+  <form class="form-grid" [formGroup]="categoriaForm" (ngSubmit)="submit()" enctype="multipart/form-data" novalidate>
+    
+    <div class="form-group">
+      <label for="nombre">Nombre</label>
+      <input id="nombre" formControlName="nombre" type="text" placeholder="Ej. Celulares" />
+    </div>
+
+    <div class="form-group">
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" formControlName="descripcion" placeholder="Describe esta categoría..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="imagen">Imagen</label>
+      <div class="custom-file-wrapper">
+        <button type="button" class="custom-file-button" (click)="fileInput.click()">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 7h2l2-3h10l2 3h2a1 1 0 011 1v11a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1z" />
+            <circle cx="12" cy="13" r="3" stroke="currentColor" stroke-width="2" fill="none" />
+          </svg>
+          Seleccionar imagen
+        </button>
+        <span class="file-name">{{ nombreArchivo || 'Ningún archivo seleccionado' }}</span>
+        <input #fileInput type="file" (change)="onFileChange($event)" hidden />
+      </div>
+    </div>
+
+    <div class="form-button">
+      <button type="submit" [disabled]="categoriaForm.invalid">Agregar Categoría</button>
+    </div>
+    
+  </form>
+</div>

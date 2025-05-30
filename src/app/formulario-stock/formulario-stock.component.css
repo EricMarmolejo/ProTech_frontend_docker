@@ -1,0 +1,136 @@
+.form-wrapper {
+  width: 100%;
+  padding: 30px;
+  background: #0b0c12;
+  border-radius: 20px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.4);
+  max-width: 900px;
+  margin: 40px auto;
+  color: #fff;
+}
+
+.form-wrapper h2 {
+  margin-bottom: 24px;
+  font-size: 22px;
+  color: #f5f5f5;
+  text-align: center;
+}
+
+/* Fade-in animación */
+.animate-fade {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Grid 2 columnas */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+}
+
+/* Campos */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+input,
+textarea {
+  padding: 14px;
+  font-size: 15px;
+  border-radius: 12px;
+  border: none;
+  background: #161824;
+  color: #fff;
+  transition: box-shadow 0.2s;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #4caf50;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #999;
+}
+
+/* Botones */
+.form-button {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+button {
+  padding: 14px 28px;
+  font-size: 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-cancel {
+  background-color: #444;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background-color: #555;
+}
+
+.btn-confirm {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.btn-confirm:hover {
+  background-color: #43a047;
+}
+
+button:disabled {
+  background-color: #333;
+  cursor: not-allowed;
+}
+
+/* Mensajes */
+.mensaje {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  text-align: center;
+}
+
+.mensaje.exito {
+  background-color: #2e7d32;
+  color: #d0ffd0;
+  border: 1px solid #43a047;
+}
+
+.mensaje.error {
+  background-color: #c62828;
+  color: #ffd0d0;
+  border: 1px solid #ef5350;
+}

@@ -1,0 +1,108 @@
+<div class="filtros">
+  <label>
+    Buscar:
+    <input
+      type="text"
+      [(ngModel)]="busqueda"
+      placeholder="Nombre o descripción"
+      class="animado"
+    />
+  </label>
+
+  <label>
+    Categoría:
+    <select [(ngModel)]="filtroCategoria" class="animado">
+      <option value="">Todas</option>
+      <option *ngFor="let cat of categoriasDisponibles" [value]="cat">
+        {{ cat }}
+      </option>
+    </select>
+  </label>
+
+  <label>
+    Precio mínimo:
+    <input
+      type="number"
+      [(ngModel)]="precioMin"
+      min="0"
+      class="animado"
+      placeholder="0"
+    />
+  </label>
+
+  <label>
+    Precio máximo:
+    <input
+      type="number"
+      [(ngModel)]="precioMax"
+      min="0"
+      class="animado"
+      placeholder="0"
+    />
+  </label>
+
+  <button class="boton limpiar" (click)="limpiarFiltros()">🧹 Limpiar</button>
+</div>
+
+<div class="contenedor-cartas">
+  <div class="carta-producto" *ngFor="let producto of productosFiltradosPaginados()">
+    <div class="imagen-contenedor">
+      <img
+        *ngIf="producto.imagen"
+        [src]="imagenBaseUrl + producto.imagen"
+        [alt]="'Imagen de ' + producto.nombre"
+        class="producto-img"
+      />
+    </div>
+
+    <div class="contenido-producto">
+      <h3 class="nombre">{{ producto.nombre }}</h3>
+      <p><strong>Precio:</strong> ${{ producto.precio | number : "1.0-2" }}</p>
+      <p [ngClass]="{ 'stock-bajo': producto.stock <= 5 }">
+        <strong>Stock:</strong> {{ producto.stock }} unidades
+        <span *ngIf="producto.stock <= 5" class="stock-icono">🚨</span>
+      </p>
+
+      <div class="stock-barra">
+        <div
+          class="relleno"
+          [style.width.%]="producto.stock > 100 ? 100 : producto.stock"
+          [ngClass]="{
+            alto: producto.stock > 20,
+            medio: producto.stock <= 20 && producto.stock > 5,
+            bajo: producto.stock <= 5
+          }"
+        ></div>
+      </div>
+      <p>
+        <strong>Categoría:</strong>
+        {{ producto.categoriaNombre || "Sin categoría" }}
+      </p>
+      <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+    </div>
+
+    <div class="botones-acciones">
+      <button class="boton editar" (click)="editarProducto(producto)">
+        ✏️ Editar
+      </button>
+      <button class="boton eliminar" (click)="eliminarProducto(producto)">
+        🗑️ Eliminar
+      </button>
+      <button class="boton entrada" (click)="registrarEntrada(producto)">
+        📥 Entrada
+      </button>
+      <button class="boton salida" (click)="registrarSalida(producto)">
+        📤 Salida
+      </button>
+      <button class="boton stock" (click)="verStock(producto._id)">
+        📊 Ver Stock
+      </button>
+    </div>
+  </div>
+</div>
+  <app-paginador
+  [totalItems]="productosFiltrados().length"
+  [pageSize]="tamanioPagina"
+  [currentPage]="paginaActual"
+  (pageChange)="paginaActual = $event">
+</app-paginador>

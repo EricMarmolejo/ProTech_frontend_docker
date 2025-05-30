@@ -1,0 +1,10 @@
+<div *ngIf="cargando">Cargando categorías...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<div class="cards-container" *ngIf="!cargando && !error">
+  <div class="card" *ngFor="let categoria of categorias">
+    <img *ngIf="categoria.imagen" [src]="imagenBaseUrl + categoria.imagen" alt="{{ categoria.nombre }}" />
+    <h3>{{ categoria.nombre }}</h3>
+    <p>{{ categoria.descripcion }}</p>
+  </div>
+</div>

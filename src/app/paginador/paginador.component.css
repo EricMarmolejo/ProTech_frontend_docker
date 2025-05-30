@@ -1,0 +1,27 @@
+/* paginador.component.css */
+.paginador {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 1rem 0;
+}
+
+.paginador button {
+  background-color: #1976d2;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.paginador button:disabled {
+  background-color: #999;
+  cursor: default;
+}
+
+.paginador button.activa {
+  background-color: #1565c0;
+  font-weight: bold;
+}

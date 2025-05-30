@@ -1,0 +1,135 @@
+.form-wrapper {
+  width: 100%;
+  padding: 30px;
+  background: #0f111a;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  max-width: 900px;
+  margin: auto;
+}
+
+/* Grid 2 columnas */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+}
+
+/* Campos */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+/* Inputs, selects y textarea */
+input,
+select,
+textarea {
+  padding: 14px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: none;
+  background: #1d2033;
+  color: #fff;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+input[type="file"] {
+  padding: 10px;
+  background-color: #1d2033;
+  color: #ccc;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #aaa;
+}
+
+/* Select personalizado */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23ccc' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position-x: 95%;
+  background-position-y: center;
+  padding-right: 30px;
+}
+
+/* Botón abajo ocupando las 2 columnas */
+.form-button {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+button {
+  padding: 14px 24px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #43a047;
+}
+
+button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+}
+
+.custom-file-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.custom-file-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.custom-file-button:hover {
+  background-color: #43a047;
+}
+
+.custom-file-button .icon {
+  width: 20px;
+  height: 20px;
+  stroke: white;
+}
+
+.file-name {
+  color: #ccc;
+  font-size: 14px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

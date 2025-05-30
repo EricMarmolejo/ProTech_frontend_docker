@@ -1,0 +1,162 @@
+.pedidos-admin-container {
+  padding: 2rem;
+  max-width: 1000px;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+  color: #f5f5f5;
+  background-color: #1e1e2f;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #3b82f6; /* azul brillante */
+  font-size: 1.8rem;
+}
+
+.estado-cargando,
+.estado-error,
+.estado-vacio {
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  color: #a1a1aa;
+}
+
+.tarjetas-contenedor {
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.tarjeta-pedido {
+  background: #2b2b3d;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  padding: 1.2rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 5px solid #3b82f6;
+}
+
+.tarjeta-pedido:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.tarjeta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  color: #60a5fa; /* azul claro */
+  font-weight: 600;
+}
+
+.pedido-id {
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: #93c5fd;
+}
+
+.pedido-estado {
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  text-align: center;
+  background-color: #334155;
+  color: #e2e8f0;
+}
+
+/* Estados coherentes con tema oscuro */
+.pendiente {
+  background-color: #facc15;
+  color: #1f2937;
+}
+
+.enviado {
+  background-color: #38bdf8;
+  color: #0f172a;
+}
+
+.entregado {
+  background-color: #22c55e;
+  color: #052e16;
+}
+
+.cancelado {
+  background-color: #ef4444;
+  color: #1e1b1b;
+}
+
+.tarjeta-cuerpo p {
+  margin: 0.4rem 0;
+  color: #e2e8f0;
+}
+
+/* Contenedor del footer para que los botones tengan espacio y no estén tan pegados */
+.tarjeta-footer {
+  display: flex;
+  gap: 0.8rem; /* separación entre botones */
+  justify-content: flex-end; /* alinea los botones a la derecha */
+  margin-top: 1rem;
+}
+
+/* Estilo base común para todos los botones en footer */
+.tarjeta-footer .btn {
+  padding: 0.5rem 1.1rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  user-select: none;
+}
+
+/* Botón Ver detalle */
+.btn-info {
+  background-color: #2563eb;
+  color: white;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+}
+
+.btn-info:hover {
+  background-color: #1d4ed8;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(29, 78, 216, 0.6);
+}
+
+/* Botón Cancelar pedido (peligro) */
+.btn-danger {
+  background-color: #ef4444;
+  color: white;
+  box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.6);
+}
+
+/* Botón Confirmar entrega (éxito) */
+.btn-success {
+  background-color: #22c55e;
+  color: white;
+  box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
+}
+
+.btn-success:hover {
+  background-color: #16a34a;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.6);
+}
+
+/* Opcional: efecto activo para todos los botones */
+.tarjeta-footer .btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 7px rgba(0,0,0,0.3);
+}

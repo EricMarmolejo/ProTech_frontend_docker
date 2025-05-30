@@ -1,0 +1,251 @@
+/* ===== CONTENEDOR DE PRODUCTOS ===== */
+.contenedor-cartas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  animation: fadeIn 0.7s ease-in-out;
+}
+
+/* ===== TARJETA DE PRODUCTO ===== */
+.product-card {
+  background-color: #1e1e1e;
+  color: white;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 320px;
+  margin: 0 auto;
+  font-size: 14px;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6);
+}
+
+.product-card img {
+  height: 100%;
+  width: auto;
+  border-radius: 10px;
+  object-fit: contain;
+  transition: transform 0.4s ease, filter 0.3s ease;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+}
+
+.product-card:hover img {
+  transform: scale(1.03);
+  filter: brightness(1.05);
+}
+
+
+.product-card h3.nombre {
+  margin-top: 12px;
+  font-size: 18px;
+  transition: color 0.3s;
+}
+
+.product-card p {
+  margin: 4px 0;
+}
+
+/* ===== BOTONES ===== */
+.buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #444;
+  color: white;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-size: 13px;
+}
+
+.btn.primary {
+  background-color: orange;
+  color: black;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background-color: #666;
+  transform: scale(1.05);
+}
+
+.btn.primary:hover {
+  background-color: darkorange;
+  transform: scale(1.05);
+}
+
+/* ===== BARRA DE STOCK ===== */
+.stock-barra {
+  height: 8px;
+  background-color: #333;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 6px 0;
+}
+
+.stock-barra .relleno {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.relleno.alto {
+  background-color: limegreen;
+}
+
+.relleno.medio {
+  background-color: gold;
+}
+
+.relleno.bajo {
+  background-color: red;
+}
+
+.stock-bajo {
+  color: red;
+  font-weight: bold;
+}
+
+.stock-icono {
+  margin-left: 4px;
+}
+
+/* ===== FILTROS ===== */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 20px;
+  background: #2c2c2c;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin: 20px;
+  justify-content: center;
+  animation: fadeIn 0.7s ease-in-out;
+}
+
+.filtros label {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.filtros input {
+  padding: 6px;
+  border-radius: 5px;
+  border: none;
+  outline: none;
+  margin-top: 4px;
+  background-color: #444;
+  color: white;
+  transition: box-shadow 0.3s ease;
+}
+
+.filtros input:focus {
+  box-shadow: 0 0 5px orange;
+}
+
+.boton.limpiar {
+  background-color: #555;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.boton.limpiar:hover {
+  background-color: crimson;
+  transform: scale(1.05);
+}
+
+/* ===== FILTRO DE CATEGORÍAS ===== */
+.filtro-categorias {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.filtro-categorias .etiqueta {
+  font-weight: bold;
+  color: white;
+  font-size: 14px;
+}
+
+.categoria-boton {
+  background-color: #333;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 13px;
+}
+
+.categoria-boton:hover {
+  background-color: #555;
+}
+
+.categoria-boton.activa {
+  background-color: orange;
+  color: black;
+  font-weight: bold;
+}
+
+.categoria-boton.todas {
+  font-style: italic;
+}
+
+/* ===== ANIMACIONES GENERALES ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.imagen-contenedor {
+  width: 100%;
+  height: 160px; /* Altura fija */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+  background-color: white; /* Fondo para imágenes claras */
+}
+.stock-bajo {
+  color: red;
+  font-weight: bold;
+}
+.stock-medio {
+  color: orange;
+}
+.stock-alto {
+  color: green;
+}
+button[disabled] {
+  background-color: #999 !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+

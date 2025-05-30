@@ -1,0 +1,12 @@
+<!-- paginador.component.html -->
+<nav class="paginador" *ngIf="totalPages > 1">
+  <button (click)="cambiarPagina(currentPage - 1)" [disabled]="currentPage === 1">&laquo;</button>
+
+  <button *ngFor="let pagina of paginas()" 
+          (click)="cambiarPagina(pagina)"
+          [class.activa]="pagina === currentPage">
+    {{ pagina }}
+  </button>
+
+  <button (click)="cambiarPagina(currentPage + 1)" [disabled]="currentPage === totalPages">&raquo;</button>
+</nav>

@@ -1,0 +1,57 @@
+<div class="pedido-detalle-container" *ngIf="pedido">
+  <h2>🧾 Detalle del Pedido</h2>
+
+   <div class="botones-acciones">
+    <button (click)="volver()" class="btn-volver">⬅ Volver</button>
+    <button (click)="generarFactura()" class="btn-factura">🧾 Generar Factura</button>
+  </div>
+
+  <div class="detalle-info">
+    <div class="info-item">
+      <label>ID:</label>
+      <span>{{ pedido._id }}</span>
+    </div>
+    <div class="info-item">
+      <label>Estado:</label>
+      <span class="estado-tag" [ngClass]="pedido.estado">{{ pedido.estado }}</span>
+    </div>
+    <div class="info-item">
+      <label>Usuario:</label>
+      <span>{{ pedido.usuario?.nombre }}</span>
+    </div>
+    <div class="info-item">
+      <label>Email:</label>
+      <span>{{ pedido.usuario?.correo }}</span>
+    </div>
+    <div class="info-item">
+      <label>Dirección:</label>
+      <span>{{ pedido.direccion?.direccion || 'No disponible' }}</span>
+    </div>
+    <div class="info-item">
+      <label>Total:</label>
+      <span class="total">${{ pedido.total | number: '1.2-2' }}</span>
+    </div>
+    <div class="info-item">
+      <label>Fecha:</label>
+      <span>{{ pedido.fecha | date: 'medium' }}</span>
+    </div>
+  </div>
+
+  <div class="detalle-productos">
+    <h3>📦 Productos</h3>
+    <ul>
+      <li *ngFor="let item of pedido.productos">
+        <img 
+          class="producto-imagen" 
+          [src]="item.producto.imagen ? 'http://localhost:3000/uploads/' + item.producto.imagen : 'assets/default-product.png'" 
+          alt="{{ item.producto.nombre }}" 
+          loading="lazy"
+        />
+        <span class="producto-nombre">{{ item.producto.nombre }}</span>
+        <span class="producto-cantidad">{{ item.cantidad }} unidad(es)</span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="estado-cargando" *ngIf="!pedido">⏳ Cargando pedido...</div>

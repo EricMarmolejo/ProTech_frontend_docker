@@ -1,0 +1,316 @@
+/* Contenedor del formulario */
+.usuario-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 26px 32px;
+  width: 100%;
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 36px 36px;
+  background: #121523;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #d0d0d0;
+}
+
+/* Para que el botón y cancelar queden juntos en fila completa */
+
+
+
+.usuario-form:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.7);
+}
+
+.usuario-form div {
+  display: flex;
+  flex-direction: column;
+  color: inherit;
+}
+
+/* Etiquetas */
+.usuario-form label {
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #a0a0a0;
+  cursor: pointer;
+  user-select: none;
+  letter-spacing: 0.04em;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.usuario-form label:hover {
+  color: #67c776;
+}
+
+/* Inputs y select */
+.usuario-form input,
+.usuario-form select {
+  padding: 14px 18px;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: none;
+  background: #232742;
+  color: #eee;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.1);
+  transition: box-shadow 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+  outline-offset: 4px;
+}
+
+.usuario-form input::placeholder,
+.usuario-form select::placeholder {
+  color: #999;
+  font-style: italic;
+  user-select: none;
+}
+
+.usuario-form input:focus,
+.usuario-form select:focus {
+  outline: none;
+  box-shadow: 0 0 14px 4px #67c776cc;
+  background: #2a3150;
+  color: #d0ffd0;
+}
+
+/* Select con flecha personalizada */
+.usuario-form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%23a0a0a0' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position-x: 92%;
+  background-position-y: center;
+  padding-right: 44px;
+  cursor: pointer;
+}
+
+/* Botones del formulario */
+.form-buttons {
+  grid-column: 1 / -1; /* Ocupa toda la fila */
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+.form-buttons button {
+  padding: 14px 36px;
+  background-color: #67c776;
+  border: none;
+  color: white;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.15s ease;
+  box-shadow: 0 6px 18px rgba(103, 199, 118, 0.55);
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-buttons button:hover:not(:disabled) {
+  background-color: #4cae4a;
+  transform: scale(1.08);
+}
+
+.form-buttons button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  box-shadow: none;
+  color: #999;
+  transform: none;
+}
+
+.btn-cancelar {
+  background-color: #555;
+  color: #ddd;
+  box-shadow: 0 6px 18px rgba(85, 85, 85, 0.5);
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.15s ease;
+}
+
+.btn-cancelar:hover {
+  background-color: #777;
+  color: #fff;
+  transform: scale(1.08);
+}
+
+/* Lista de usuarios */
+.lista-usuarios {
+  list-style: none;
+  padding: 0;
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Tarjeta individual */
+.usuario-card {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1.5rem 1.8rem;
+  border-radius: 20px;
+  background: #1f2435;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+  color: #eee;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  min-height: 170px;
+  user-select: none;
+}
+
+.usuario-card:hover {
+  background-color: #29304d;
+  transform: translateY(-4px);
+}
+
+/* Avatar */
+.usuario-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #4caf50;
+  box-shadow: 0 0 10px #4caf50cc;
+  background-color: #333;
+  flex-shrink: 0;
+}
+
+/* Info del usuario */
+.usuario-info {
+  flex: 1 1 220px;
+}
+
+.usuario-info h3 {
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #67c776;
+  user-select: text;
+}
+
+.usuario-info p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #ccc;
+  user-select: text;
+}
+
+/* Botones acción */
+.usuario-actions {
+  flex: 1 1 100%;
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+  user-select: none;
+}
+
+.usuario-actions button {
+  flex: 1 1 48%;
+  padding: 14px 0;
+  background-color: #67c776;
+  border: none;
+  color: white;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  box-shadow: 0 6px 14px rgba(103, 199, 118, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.usuario-actions button:last-child {
+  background-color: #e94e4e;
+  box-shadow: 0 6px 14px rgba(233, 78, 78, 0.65);
+}
+
+.usuario-actions button:hover {
+  transform: scale(1.1);
+}
+
+/* Campo para cambiar avatar */
+.actualizar-avatar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.cambiar-avatar-label {
+  padding: 10px 22px;
+  background-color: #67c776;
+  color: white;
+  border-radius: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(103, 199, 118, 0.55);
+  user-select: none;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  text-align: center;
+  display: inline-block;
+}
+
+.cambiar-avatar-label:hover {
+  background-color: #4cae4a;
+  transform: scale(1.1);
+}
+
+/* Badge para roles o estados (si lo usas) */
+.badge {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 8px 18px;
+  background-color: #67c776;
+  color: #fff;
+  border-radius: 18px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  width: fit-content;
+  box-shadow: 0 4px 12px #67c776cc;
+  user-select: none;
+}
+
+/* Responsive ajustes */
+@media (max-width: 480px) {
+  .usuario-form {
+    padding: 24px 20px;
+    gap: 20px;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+  }
+
+  .form-buttons button {
+    width: 100%;
+    padding: 14px 0;
+  }
+
+  .usuario-actions {
+    flex-direction: column;
+  }
+
+  .usuario-actions button {
+    flex: 1 1 100%;
+  }
+
+  .usuario-info {
+    flex: 1 1 100%;
+  }
+
+  .usuario-card {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .actualizar-avatar {
+    margin-top: 20px;
+  }
+}

@@ -1,0 +1,31 @@
+<div *ngIf="loading">Cargando...</div>
+
+<div *ngIf="!loading" class="detalle-card">
+
+  <!-- Imagen del producto con fondo blanco -->
+  <div class="imagen-container" *ngIf="producto.imagen">
+    <img 
+      [src]="imagenBaseUrl + producto.imagen" 
+      [alt]="'Imagen de ' + producto.nombre"
+      class="producto-img"
+    />
+  </div>
+
+  <h2>{{ producto.nombre }}</h2>
+  <p><strong>Precio:</strong> {{ producto.precio | currency:'COP' }}</p>
+  <p><strong>Disponibilidad:</strong> {{ producto.stock > 0 ? 'En stock' : 'Agotado' }}</p>
+  <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+
+  <ul class="caracteristicas-lista" *ngIf="producto?.caracteristicas?.length">
+    <li *ngFor="let caracteristica of producto.caracteristicas">{{ caracteristica }}</li>
+  </ul>
+
+  <button 
+    class="btn-agregar"
+    [disabled]="producto.stock === 0"
+    [ngClass]="{'cursor-not-allowed opacity-50': producto.stock === 0}">
+    Agregar al carrito
+  </button>
+
+  <button class="btn-volver" (click)="volver()">← Volver</button>
+</div>

@@ -1,0 +1,78 @@
+<div class="filtros">
+    <label>
+        Buscar:
+        <input type="text" [(ngModel)]="busqueda" placeholder="Nombre o descripción" class="animado" />
+    </label>
+
+    <div class="filtro-categorias">
+        <span class="etiqueta">Categoría:</span>
+        <button *ngFor="let cat of [''].concat(categoriasDisponibles)" (click)="seleccionarCategoria(cat)" [ngClass]="{
+      'categoria-boton': true,
+      activa: filtroCategoria === cat,
+      todas: cat === ''
+    }">
+            {{ cat || 'Todas' }}
+        </button>
+    </div>
+
+
+    <label>
+        Precio mínimo:
+        <input type="number" [(ngModel)]="precioMin" min="0" class="animado" placeholder="0" />
+    </label>
+
+    <label>
+        Precio máximo:
+        <input type="number" [(ngModel)]="precioMax" min="0" class="animado" placeholder="0" />
+    </label>
+
+    <button class="boton limpiar" (click)="limpiarFiltros()">🧹 Limpiar</button>
+</div>
+
+<div class="contenedor-cartas">
+    <div class="product-card" *ngFor="let producto of productosFiltrados()">
+        <div class="imagen-contenedor">
+            <img *ngIf="producto.imagen" [src]="imagenBaseUrl + producto.imagen" [alt]="'Imagen de ' + producto.nombre"
+                class="producto-img" />
+        </div>
+
+        <div class="contenido-producto">
+            <h3 class="nombre">{{ producto.nombre }}</h3>
+            <p><strong>Precio:</strong> ${{ producto.precio | number : "1.0-2" }}</p>
+            <p [ngClass]="{
+    'stock-bajo': producto.stock <= 5,
+    'stock-medio': producto.stock > 5 && producto.stock <= 20,
+    'stock-alto': producto.stock > 20
+  }">
+                <strong>Disponibilidad:</strong>
+                <span *ngIf="producto.stock === 0">Sin stock ❌</span>
+                <span *ngIf="producto.stock > 0 && producto.stock <= 5">Muy bajo 🔴</span>
+                <span *ngIf="producto.stock > 5 && producto.stock <= 20">Disponible 🟡</span>
+                <span *ngIf="producto.stock > 20">En stock 🟢</span>
+            </p>
+
+
+            <div class="stock-barra">
+                <div class="relleno" [style.width.%]="producto.stock > 100 ? 100 : producto.stock" [ngClass]="{
+            alto: producto.stock > 20,
+            medio: producto.stock <= 20 && producto.stock > 5,
+            bajo: producto.stock <= 5
+          }"></div>
+            </div>
+            <p><strong>Categoría:</strong> {{ producto.categoriaNombre || "Sin categoría" }}</p>
+            <p><strong>Descripción:</strong> {{ producto.descripcion }}</p>
+        </div>
+
+        <div class="buttons">
+            <button class="btn primary" (click)="verDetalles(producto._id)">Ver detalles</button>
+            <button class="btn" (click)="agregarAlCarrito(producto)" [disabled]="producto.stock === 0"
+                [ngClass]="{'cursor-not-allowed opacity-50': producto.stock === 0}">
+                Agregar al carrito</button>
+        </div>
+    </div>
+
+
+</div>
+<app-paginador [totalItems]="productosFiltradosSinPaginar().length" [pageSize]="tamanioPagina"
+    [currentPage]="paginaActual" (pageChange)="paginaActual = $event">
+</app-paginador>

@@ -1,0 +1,81 @@
+.detalle-card {
+  background-color: #1e1b2e;
+  color: #ffffff;
+  padding: 2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  max-width: 800px;
+  margin: 2rem auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.producto-img {
+  display: block;
+  margin: 0 auto 1.5rem auto;
+  border-radius: 1rem;
+  background-color: white;
+  padding: 1rem;
+  width: 300px;
+  height: auto;
+  object-fit: contain;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #fff;
+}
+
+p {
+  margin: 0.4rem 0;
+  line-height: 1.6;
+  color: #e0e0e0;
+}
+
+p strong {
+  color: #ffffff;
+}
+
+.caracteristicas-lista {
+  list-style: disc;
+  margin: 1rem 0 2rem 2rem;
+  color: #ccc;
+}
+
+.btn-agregar, .btn-volver {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.75rem;
+  margin-right: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-agregar {
+  background-color: #a855f7; /* púrpura */
+  color: white;
+}
+
+.btn-agregar:hover {
+  background-color: #9333ea;
+}
+
+.btn-volver {
+  background-color: #2e2e3e;
+  color: white;
+}
+
+.btn-volver:hover {
+  background-color: #444459;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+
+.opacity-50 {
+  opacity: 0.5 !important;
+}

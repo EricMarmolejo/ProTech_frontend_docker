@@ -1,0 +1,217 @@
+/* Contenedor general */
+.contenedor-cartas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* Tarjeta del producto */
+.carta-producto {
+  width: 260px;
+  background-color: #1e1e1e;
+  color: #eeeeee;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transform: translateY(30px) scale(0.98);
+  opacity: 0;
+  animation: fadeSlideIn 0.6s ease forwards;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+@keyframes fadeSlideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.carta-producto:hover {
+  transform: perspective(800px) rotateX(2deg) rotateY(2deg) scale(1.03);
+  box-shadow: 0 12px 30px rgba(255, 255, 255, 0.08);
+}
+
+/* Imagen del producto */
+.imagen-contenedor {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 160px;
+  width: 100%;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.05);
+}
+
+.producto-img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  transition: transform 0.4s ease;
+}
+
+.carta-producto:hover .producto-img {
+  transform: scale(1.05);
+}
+
+/* Contenido textual */
+.contenido-producto h3 {
+  font-size: 1.3rem;
+  margin: 0;
+  color: #ffffff;
+}
+
+.contenido-producto p {
+  font-size: 0.95rem;
+  color: #bbbbbb;
+  margin: 4px 0;
+  text-align: center;
+}
+
+/* Botones */
+.botones-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: auto;
+  justify-content: center;
+}
+
+.boton {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #fff;
+}
+
+.boton:hover {
+  transform: scale(1.07);
+}
+
+/* Colores */
+.boton.editar { background-color: #3498db; }
+.boton.eliminar { background-color: #e74c3c; }
+.boton.entrada { background-color: #2ecc71; }
+.boton.salida { background-color: #f39c12; }
+.boton.stock {
+  background-color: #9b59b6;
+  grid-column: span 2;
+}
+
+/* Filtros */
+.filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 16px 24px;
+  background-color: #121212;
+  border-radius: 12px;
+  margin: 24px auto;
+  width: fit-content;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.filtros label {
+  font-size: 0.9rem;
+  color: #cccccc;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 140px;
+}
+
+.filtros input[type="text"],
+.filtros select,
+.filtros input[type="number"] {
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.3s, box-shadow 0.3s;
+  width: 140px;
+}
+
+.filtros input:focus,
+.filtros select:focus {
+  outline: none;
+  background-color: #333333;
+  box-shadow: 0 0 0 2px #7c4dff;
+}
+
+.filtros .boton.limpiar {
+  background-color: #9e9e9e;
+  color: #1a1a1a;
+  font-weight: bold;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  border: none;
+  min-width: 100px;
+  align-self: center;
+}
+
+.filtros .boton.limpiar:hover {
+  background-color: #bdbdbd;
+  transform: scale(1.05);
+}
+
+/* Animaciones para inputs */
+.animado {
+  animation: aparecer 0.4s ease-in-out;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estado especial */
+.stock-bajo {
+  color: #ff5252;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .filtros {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .filtros label,
+  .filtros input,
+  .filtros select,
+  .filtros .boton.limpiar {
+    width: 100%;
+    min-width: unset;
+  }
+}

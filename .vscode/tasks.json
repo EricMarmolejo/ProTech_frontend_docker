@@ -1,0 +1,55 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "ng serve",
+      "type": "shell",
+      "command": "ng serve",
+      "isBackground": true,
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "problemMatcher": {
+        "owner": "typescript",
+        "pattern": [
+          {
+            "regexp": "^(.*\\.ts)\\((\\d+),(\\d+)\\):\\s+(error)\\s+(TS\\d+):\\s+(.*)$",
+            "file": 1,
+            "line": 2,
+            "column": 3,
+            "severity": 4,
+            "code": 5,
+            "message": 6
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*Compiling",
+          "endsPattern": "Compiled successfully"
+        }
+      },
+      "presentation": {
+        "panel": "shared"
+      }
+    },
+    {
+      "label": "npm: test",
+      "type": "shell",
+      "command": "npm test",
+      "isBackground": true,
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "problemMatcher": "$tsc",
+      "presentation": {
+        "panel": "shared"
+      }
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
+  <img src="../../../assets/ProTech.png" alt="Logo" class="logo-form" />
+
+  <h2 class="typewriter">Crear Cuenta</h2>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="nombre"><i class="fas fa-user"></i> Nombre</label>
+      <input id="nombre" type="text" formControlName="nombre" />
+    </div>
+
+    <div class="form-group">
+      <label for="correo"><i class="fas fa-envelope"></i> Correo electrónico</label>
+      <input id="correo" type="email" formControlName="correo" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="telefono"><i class="fas fa-phone"></i> Teléfono</label>
+      <input id="telefono" type="text" formControlName="telefono" />
+    </div>
+
+    <div class="form-group">
+      <label for="fechaNacimiento"><i class="fas fa-calendar"></i> Fecha de nacimiento</label>
+      <input id="fechaNacimiento" type="date" formControlName="fechaNacimiento"max="{{ maxDate }}"/>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label for="genero"><i class="fas fa-venus-mars"></i> Género</label>
+      <select id="genero" formControlName="genero">
+        <option value="masculino">Masculino</option>
+        <option value="femenino">Femenino</option>
+        <option value="otro">Otro</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="avatar"><i class="fas fa-image"></i> Avatar</label>
+      <input id="avatar" type="file" (change)="onFileSelected($event)" />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="password"><i class="fas fa-lock"></i> Contraseña</label>
+    <div class="password-wrapper">
+      <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" />
+      <button type="button" (click)="togglePasswordVisibility()" class="toggle-password">
+        <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="confirmPassword"><i class="fas fa-lock"></i> Confirmar Contraseña</label>
+    <div class="password-wrapper">
+      <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" formControlName="confirmPassword" />
+      <button type="button" (click)="toggleConfirmPasswordVisibility()" class="toggle-password">
+        <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+      </button>
+    </div>
+    <div *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched" class="error">
+      Las contraseñas no coinciden
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="registerForm.invalid">Registrarse</button>
+
+  <div class="register-link">
+    ¿Ya tienes una cuenta?
+    <a routerLink="/login">Inicia sesión</a>
+  </div>
+</form>

@@ -1,0 +1,117 @@
+<div class="reportes" role="main" aria-label="Sección de reportes generales">
+  <h2 class="titulo">📊 Reportes Generales</h2>
+
+
+  <!-- PEDIDOS -->
+  <section class="card" aria-labelledby="pedidos-title">
+    <h3 id="pedidos-title" class="subtitulo">📦 Pedidos (Total: {{ totalPedidos }}, Ventas: {{ totalVentas | currency }})</h3>
+
+    <!-- Buscador -->
+    <input
+      type="text"
+      aria-label="Buscar pedidos por usuario o estado"
+      placeholder="Buscar pedidos..."
+      [(ngModel)]="filtroPedidos"
+      (input)="resetearPaginaPedidos()"
+      class="input-busqueda"
+    />
+
+    <!-- Gráfico -->
+    <canvas #miGrafico role="img" aria-label="Gráfico de barras de pedidos por estado"></canvas>
+
+    <!-- Tabla paginada -->
+    <div class="tabla-responsive">
+      <table class="tabla" role="table" aria-describedby="pedidos-desc">
+        <caption id="pedidos-desc" class="visually-hidden">
+          Tabla de pedidos con columnas ID, Usuario, Dirección, Total y Estado.
+        </caption>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Dirección</th>
+            <th>Total</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pedido of pedidosFiltradosPaginados">
+            <td>{{ pedido._id }}</td>
+            <td>{{ pedido.usuario?.nombre }}</td>
+            <td>{{ pedido.direccion?.direccion }}</td>
+            <td>{{ pedido.total | currency}}</td>
+            <td>{{ pedido.estado }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginación -->
+   <!-- Por esto -->
+<app-paginador
+  *ngIf="totalPedidos > pedidosPorPagina"
+  [totalItems]="pedidosFiltrados.length"
+  [pageSize]="pedidosPorPagina"
+  [currentPage]="paginaPedidosActual"
+  (pageChange)="paginaPedidosActual = $event"
+  aria-label="Paginación de pedidos"
+></app-paginador>
+
+    <button class="btn-exportar" (click)="exportarPedidosCSV()" aria-label="Exportar pedidos a CSV">
+      Exportar Pedidos CSV
+    </button>
+  </section>
+
+  <!-- STOCK -->
+  <section class="card" aria-labelledby="stock-title">
+    <h3 id="stock-title" class="subtitulo">🏷️ Stock (Total artículos: {{ totalStock }})</h3>
+
+    <ul class="lista" role="list" aria-live="polite">
+      <li *ngFor="let item of stockFiltradoPaginado" class="lista-item">
+        <strong>Producto:</strong> {{ item.producto?.nombre }} |
+        <strong>Cantidad:</strong> {{ item.cantidad }} |
+        <strong>Tipo:</strong> {{ item.tipo }}
+      </li>
+    </ul>
+    <app-paginador
+  *ngIf="totalPaginasStock > 1"
+  [totalItems]="stockFiltrado.length"
+  [pageSize]="stockPorPagina"
+  [currentPage]="paginaStockActual"
+  (pageChange)="paginaStockActual = $event"
+  aria-label="Paginación de stock"
+></app-paginador>
+  </section>
+
+  <!-- PRODUCTOS -->
+  <section class="card" aria-labelledby="productos-title">
+    <h3 id="productos-title" class="subtitulo">🛍️ Productos (Total: {{ totalProductos }})</h3>
+
+    <!-- Buscador -->
+    <input
+      type="text"
+      aria-label="Buscar productos por nombre"
+      placeholder="Buscar productos..."
+      [(ngModel)]="filtroProductos"
+      class="input-busqueda"
+    />
+
+    <ul class="lista" role="list" aria-live="polite">
+      <li *ngFor="let producto of productosFiltradosPaginados" class="lista-item">
+        {{ producto.nombre }} - <strong>Precio:</strong> {{ producto.precio | currency }}
+      </li>
+    </ul>
+    <app-paginador
+  *ngIf="totalPaginasProductos > 1"
+  [totalItems]="productosFiltrados.length"
+  [pageSize]="productosPorPagina"
+  [currentPage]="paginaProductosActual"
+  (pageChange)="paginaProductosActual = $event"
+  aria-label="Paginación de productos"
+></app-paginador>
+
+    <button class="btn-exportar" (click)="exportarProductosCSV()" aria-label="Exportar productos a CSV">
+      Exportar Productos CSV
+    </button>
+  </section>
+</div>
