@@ -20,7 +20,7 @@ export class PedidosAdminComponent implements OnInit {
   error: string | null = null;
 
   paginaActual = 1;
-  tamanioPagina = 3;
+  tamanioPagina = 4;
   totalPedidos = 0;
 
   constructor(
