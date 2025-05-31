@@ -15,7 +15,6 @@
 ![image](https://github.com/user-attachments/assets/cead2e3d-a5c0-41f5-8b21-a877438e62b2)
 
 
-> *Nota: Puedes añadir tus capturas en `docs/screenshots/`.*
 
 ---
 
