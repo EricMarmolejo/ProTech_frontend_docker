@@ -35,6 +35,10 @@
       <label>Fecha:</label>
       <span>{{ pedido.fecha | date: 'medium' }}</span>
     </div>
+    <div class="info-item">
+      <label>Telefono:</label>
+      <span>{{ pedido.direccion?.telefono  }}</span>
+    </div>
   </div>
 
   <div class="detalle-productos">

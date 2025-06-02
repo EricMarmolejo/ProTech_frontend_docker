@@ -12,11 +12,12 @@ import {
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PaginadorComponent } from '../../paginador/paginador.component';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-resumen-orden',
   standalone: true,
-  imports: [CommonModule,PaginadorComponent],
+  imports: [CommonModule,PaginadorComponent, FormsModule],
   templateUrl: './resumen-orden.component.html',
   styleUrls: ['./resumen-orden.component.css'],
 })
@@ -27,6 +28,7 @@ export class ResumenOrdenComponent implements OnInit {
   usuarioId: string | null = null;
   paginaActual = 1;
   tamanioPagina = 2;
+  direcciones: any[] = []; // Guardar todas las direcciones
 
   constructor(
     private carritoService: CarritoService,
@@ -36,22 +38,23 @@ export class ResumenOrdenComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.items = this.carritoService.obtenerCarritoActual();
-    this.total = this.items.reduce(
-      (acc, item) => acc + item.producto.precio * item.cantidad,
-      0
-    );
+  this.items = this.carritoService.obtenerCarritoActual();
+  this.total = this.items.reduce(
+    (acc, item) => acc + item.producto.precio * item.cantidad,
+    0
+  );
 
-    this.usuarioId = this.perfilService.getUserIdFromToken();
-    if (this.usuarioId) {
-      this.perfilService
-        .obtenerDireccionesPorUsuario(this.usuarioId)
-        .subscribe((direcciones) => {
-          this.direccionSeleccionada =
-            direcciones.find((d: any) => d.esPrincipal) || direcciones[0];
-        });
-    }
+  this.usuarioId = this.perfilService.getUserIdFromToken();
+  if (this.usuarioId) {
+    this.perfilService
+      .obtenerDireccionesPorUsuario(this.usuarioId)
+      .subscribe((direcciones) => {
+        this.direcciones = direcciones;
+        this.direccionSeleccionada =
+          direcciones.find((d: any) => d.esPrincipal) || direcciones[0];
+      });
   }
+}
 
   volverAlCarrito(): void {
     this.router.navigate(['dashboard/carrito']);

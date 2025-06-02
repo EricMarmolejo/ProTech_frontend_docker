@@ -370,3 +370,71 @@ form button.btn-primary:disabled {
     font-size: 1rem;
   }
 }
+.perfil-container {
+  transition: transform 0.3s ease;
+}
+
+.section {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.direccion-item {
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.direccion-item:hover {
+  transform: translateX(5px);
+}
+
+.btn-group button {
+  transition: transform 0.2s ease;
+}
+
+.btn-group button:hover {
+  transform: scale(1.02);
+}
+.direccion-acciones {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  justify-content: flex-end;
+}
+
+.direccion-acciones button {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Botón editar: azul suave y hover más intenso */
+.direccion-acciones .btn-outline-primary {
+  color: #9f7aea;
+  background-color: transparent;
+  border-color: #9f7aea;
+}
+
+.direccion-acciones .btn-outline-primary:hover {
+  background-color: #9f7aea;
+  color: #fff;
+  border-color: #805ad5;
+}
+
+/* Botón eliminar: rojo suave y hover más intenso */
+.direccion-acciones .btn-outline-danger {
+  color: #e53e3e;
+  background-color: transparent;
+  border-color: #e53e3e;
+}
+
+.direccion-acciones .btn-outline-danger:hover {
+  background-color: #e53e3e;
+  color: #fff;
+  border-color: #9b2c2c;
+}

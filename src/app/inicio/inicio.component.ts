@@ -105,7 +105,7 @@ export class InicioComponent implements OnInit {
     this.categoriasDisponibles = Array.from(categoriasSet);
   }
   verDetalles(id: string): void {
-    this.router.navigate(['/productos', id]);
+    this.router.navigate(['/dashboard/producto', id]);
   }
 
   agregarAlCarrito(producto: any): void {
