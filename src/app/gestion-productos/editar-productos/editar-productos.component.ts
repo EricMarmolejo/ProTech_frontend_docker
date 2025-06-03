@@ -112,10 +112,18 @@ export class EditarProductosComponent implements OnInit {
       descripcion: valores.descripcion,
       precio: Number(valores.precio),
       categoria: valores.categoria,
-      caracteristicas: valores.caracteristicas
-        ? valores.caracteristicas.split(',').map((c: string) => c.trim())
-        : [],
     };
+
+    // Verificar que caracteristicas exista y sea string no vacío
+    if (
+      typeof valores.caracteristicas === 'string' &&
+      valores.caracteristicas.trim() !== ''
+    ) {
+      productoData.caracteristicas = valores.caracteristicas
+        .split(',')
+        .map((c: string) => c.trim())
+        .filter((c: string) => c.length > 0);
+    }
 
     const token = localStorage.getItem('auth_token') || '';
 

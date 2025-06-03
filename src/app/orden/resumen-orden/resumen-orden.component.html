@@ -21,14 +21,30 @@
         </tr>
       </tbody>
     </table>
-    <app-paginador
-  [totalItems]="items.length"
-  [pageSize]="tamanioPagina"
-  [currentPage]="paginaActual"
-  (pageChange)="paginaActual = $event">
-</app-paginador>
+    <app-paginador [totalItems]="items.length" [pageSize]="tamanioPagina" [currentPage]="paginaActual"
+      (pageChange)="paginaActual = $event">
+    </app-paginador>
 
   </section>
+
+  <div class="seleccion-direccion">
+    <h3>Selecciona una dirección</h3>
+    <div class="card-direccion" *ngFor="let dir of direcciones" [ngClass]="{ 'activa': direccionSeleccionada === dir }">
+      <label class="card-label">
+        <input type="radio" name="direccion" [value]="dir" [(ngModel)]="direccionSeleccionada" />
+        <div class="contenido-direccion">
+          <p>
+            {{ dir.nombreDestinatario }} – {{ dir.direccion }}, {{ dir.ciudad }}
+            <span *ngIf="dir.esPrincipal" class="principal">(Principal)</span>
+          </p>
+        </div>
+      </label>
+    </div>
+  </div>
+
+
+
+
 
   <section class="direccion-section" *ngIf="direccionSeleccionada">
     <h3>Dirección de Envío</h3>
@@ -41,6 +57,7 @@
       <p><strong>Teléfono:</strong> {{ direccionSeleccionada.telefono || 'N/A' }}</p>
     </div>
   </section>
+
 
   <section class="total-section">
     <h3>Total del Pedido</h3>

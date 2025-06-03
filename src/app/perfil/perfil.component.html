@@ -38,103 +38,81 @@
     <h3>Mis Direcciones</h3>
 
     <div *ngIf="direcciones?.length; else sinDirecciones">
-      <div *ngFor="let dir of direcciones" class="direccion-card" [ngClass]="{ 'principal': dir.esPrincipal }">
+      <div *ngFor="let dir of direccionesPaginadas" class="direccion-card" [ngClass]="{ 'principal': dir.esPrincipal }">
         <p><strong>Destinatario:</strong> {{ dir?.nombreDestinatario }}</p>
         <p><strong>Dirección:</strong> {{ dir.direccion }}</p>
         <p><strong>Ciudad:</strong> {{ dir.ciudad }}, {{ dir.departamento }}</p>
         <p><strong>Código Postal:</strong> {{ dir.codigoPostal }}</p>
         <p><strong>Teléfono:</strong> {{ dir.telefono }}</p>
         <p *ngIf="dir.esPrincipal" class="etiqueta-principal">Dirección principal</p>
+
+        <div class="direccion-acciones">
+          <button class="btn btn-outline-primary btn-sm" (click)="editarDireccion(dir)">Editar</button>
+          <button class="btn btn-outline-danger btn-sm" (click)="eliminarDireccion(dir._id)">Eliminar</button>
+        </div>
       </div>
+
+      <app-paginador [totalItems]="direcciones.length" [pageSize]="pageSize" [currentPage]="currentPage"
+        (pageChange)="onPageChange($event)">
+      </app-paginador>
     </div>
 
     <ng-template #sinDirecciones>
-      <p>No tienes direcciones registradas aún.</p>
+      <p>No tienes direcciones guardadas.</p>
     </ng-template>
+
 
     <h4>Agregar nueva dirección</h4>
     <form #formDirec="ngForm" (ngSubmit)="agregarDireccion()" class="row g-3">
-  <div class="col-12">
-    <label for="nombreDestinatario" class="form-label">Nombre destinatario</label>
-    <input
-      type="text"
-      class="form-control"
-      id="nombreDestinatario"
-      name="nombreDestinatario"
-      [(ngModel)]="direccionForm.nombreDestinatario"
-      required
-    />
-  </div>
+      <div class="col-12">
+        <label for="nombreDestinatario" class="form-label">Nombre destinatario</label>
+        <input type="text" class="form-control" id="nombreDestinatario" name="nombreDestinatario"
+          [(ngModel)]="direccionForm.nombreDestinatario" required />
+      </div>
 
-  <div class="col-12">
-    <label for="telefono" class="form-label">Teléfono</label>
-    <input
-      type="text"
-      class="form-control"
-      id="telefono"
-      name="telefono"
-      [(ngModel)]="direccionForm.telefono"
-      required
-    />
-  </div>
+      <div class="col-12">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <input type="text" class="form-control" id="telefono" name="telefono" [(ngModel)]="direccionForm.telefono"
+          required />
+      </div>
 
-  <div class="col-12">
-    <label for="direccion" class="form-label">Dirección</label>
-    <input
-      type="text"
-      class="form-control"
-      id="direccion"
-      name="direccion"
-      [(ngModel)]="direccionForm.direccion"
-      required
-    />
-  </div>
+      <div class="col-12">
+        <label for="direccion" class="form-label">Dirección</label>
+        <input type="text" class="form-control" id="direccion" name="direccion" [(ngModel)]="direccionForm.direccion"
+          required />
+      </div>
 
-  <div class="col-12">
-    <label for="ciudad" class="form-label">Ciudad</label>
-    <input
-      type="text"
-      class="form-control"
-      id="ciudad"
-      name="ciudad"
-      [(ngModel)]="direccionForm.ciudad"
-      required
-    />
-  </div>
+      <div class="col-12">
+        <label for="ciudad" class="form-label">Ciudad</label>
+        <input type="text" class="form-control" id="ciudad" name="ciudad" [(ngModel)]="direccionForm.ciudad" required />
+      </div>
 
-  <div class="col-12">
-    <label for="departamento" class="form-label">Departamento</label>
-    <input
-      type="text"
-      class="form-control"
-      id="departamento"
-      name="departamento"
-      [(ngModel)]="direccionForm.departamento"
-      required
-    />
-  </div>
+      <div class="col-12">
+        <label for="departamento" class="form-label">Departamento</label>
+        <input type="text" class="form-control" id="departamento" name="departamento"
+          [(ngModel)]="direccionForm.departamento" required />
+      </div>
 
-  <div class="col-12 form-check">
-    <input
-      class="form-check-input"
-      type="checkbox"
-      id="esPrincipal"
-      name="esPrincipal"
-      [(ngModel)]="direccionForm.esPrincipal"
-    />
-    <label class="form-check-label" for="esPrincipal">Es principal</label>
-  </div>
+      <!-- Nuevo campo código postal -->
+      <div class="col-12">
+        <label for="codigoPostal" class="form-label">Código Postal</label>
+        <input type="text" class="form-control" id="codigoPostal" name="codigoPostal"
+          [(ngModel)]="direccionForm.codigoPostal" required />
+      </div>
 
-  <div class="col-12">
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="formDirec.invalid"
-    >
-      Agregar dirección
-    </button>
-  </div>
-</form>
+      <div class="col-12 form-check">
+        <input class="form-check-input" type="checkbox" id="esPrincipal" name="esPrincipal"
+          [(ngModel)]="direccionForm.esPrincipal" />
+        <label class="form-check-label" for="esPrincipal">Es principal</label>
+      </div>
+
+
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary" [disabled]="formDirec.invalid">
+          Agregar dirección
+        </button>
+      </div>
+    </form>
   </section>
   <br>
   <br>

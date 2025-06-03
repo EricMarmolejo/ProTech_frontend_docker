@@ -11,7 +11,7 @@ import { PaginadorComponent } from '../../paginador/paginador.component';
 @Component({
   selector: 'app-lista-productos-cliente',
   standalone: true,
-  imports: [CommonModule, FormsModule,PaginadorComponent],
+  imports: [CommonModule, FormsModule, PaginadorComponent],
   templateUrl: './lista-productos.component.html',
   styleUrls: ['./lista-productos.component.css'],
 })
@@ -22,7 +22,8 @@ export class ListaProductosComponent implements OnInit {
   imagenBaseUrl = 'http://localhost:3000/uploads/';
   busqueda = '';
   filtroCategoria = '';
-  categoriasDisponibles: string[] = [];
+  categoriasDisponibles: { nombre: string; imagen: string }[] = [];
+
   precioMin: string | null = null;
   precioMax: string | null = null;
   paginaActual = 1;
@@ -84,8 +85,19 @@ export class ListaProductosComponent implements OnInit {
   }
 
   extraerCategoriasDisponibles(): void {
-    const categoriasSet = new Set(this.productos.map((p) => p.categoriaNombre));
-    this.categoriasDisponibles = Array.from(categoriasSet);
+    const mapa = new Map<string, string>(); // nombre => imagen
+
+    for (const prod of this.productos) {
+      const nombre = prod.categoriaNombre;
+      const imagen = prod.categoria?.imagen || 'default.jpg'; // usa una imagen por defecto
+      if (!mapa.has(nombre)) {
+        mapa.set(nombre, imagen);
+      }
+    }
+
+    this.categoriasDisponibles = Array.from(mapa.entries()).map(
+      ([nombre, imagen]) => ({ nombre, imagen })
+    );
   }
 
   productosFiltrados(): any[] {
@@ -138,4 +150,34 @@ export class ListaProductosComponent implements OnInit {
     this.filtroCategoria = categoria;
     this.paginaActual = 1;
   }
+  paginaCategorias = 1;
+tamanoPaginaCategorias = 4;
+
+categoriasPaginadas() {
+  const inicio = (this.paginaCategorias - 1) * this.tamanoPaginaCategorias;
+  const fin = inicio + this.tamanoPaginaCategorias;
+  return this.categoriasDisponibles.slice(inicio, fin);
+}
+
+totalPaginasCategorias() {
+  return Math.ceil(this.categoriasDisponibles.length / this.tamanoPaginaCategorias);
+}
+paginaAnteriorCategorias(): void {
+  if (this.paginaCategorias > 1) {
+    this.paginaCategorias--;
+  }
+}
+
+paginaSiguienteCategorias(): void {
+  if (this.paginaCategorias < this.totalPaginasCategorias()) {
+    this.paginaCategorias++;
+  }
+}
+onImageError(event: Event) {
+  const target = event.target as HTMLImageElement;
+  target.src = this.imagenBaseUrl + 'default.jpg'; // o la ruta a una imagen por defecto válida
+}
+
+
+
 }

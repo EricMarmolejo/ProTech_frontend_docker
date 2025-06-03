@@ -33,6 +33,17 @@ export class PerfilService {
       headers: this.getAuthHeaders(),
     });
   }
+  obtenerDireccionPorId(id: string): Observable<any> {
+    return this.http.get(`${this.direccionesUrl}/${id}`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  actualizarDireccion(id: string, direccion: any): Observable<any> {
+    return this.http.put(`${this.direccionesUrl}/${id}`, direccion, {
+      headers: this.getAuthHeaders(),
+    });
+  }
 
   cambiarContraseña(actual: string, nueva: string) {
     return this.http.put(
@@ -72,9 +83,13 @@ export class PerfilService {
   }
 
   establecerPrincipal(id: string) {
-    return this.http.patch(`${this.direccionesUrl}/${id}/principal`, {}, {
-      headers: this.getAuthHeaders(),
-    });
+    return this.http.patch(
+      `${this.direccionesUrl}/${id}/principal`,
+      {},
+      {
+        headers: this.getAuthHeaders(),
+      }
+    );
   }
 
   // Opcional: decodificar token para obtener ID de usuario
