@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class StockService {
-  private baseUrl = 'http://localhost:3000/api/stock';
+  private baseUrl = 'https://pro-tech-backend.vercel.app/api/stock';
 
   constructor(private http: HttpClient) {}
 

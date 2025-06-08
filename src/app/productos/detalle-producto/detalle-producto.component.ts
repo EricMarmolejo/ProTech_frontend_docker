@@ -17,7 +17,7 @@ import { CarritoService } from '../../shared/services/carrito.service';
 export class DetalleProductoComponent implements OnInit {
   producto: any;
   loading = true;
-  imagenBaseUrl = 'http://localhost:3000/uploads/';
+  imagenBaseUrl = 'https://pro-tech-backend.vercel.app/uploads/';
 
   constructor(
     private route: ActivatedRoute,

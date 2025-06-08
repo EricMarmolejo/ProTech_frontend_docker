@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ReportesService {
-  private apiUrl = 'http://localhost:3000/api'; // Incluye /api
+  private apiUrl = 'https://pro-tech-backend.vercel.app/api'; // Incluye /api
 
   constructor(private http: HttpClient) {}
 

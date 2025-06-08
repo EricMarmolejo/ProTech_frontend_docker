@@ -24,7 +24,7 @@ export interface Producto {
   providedIn: 'root',
 })
 export class ProductoService {
-  private apiUrl = 'http://localhost:3000/api/productos';
+  private apiUrl = 'https://pro-tech-backend.vercel.app/api/productos';
 
   constructor(private http: HttpClient) {}
 

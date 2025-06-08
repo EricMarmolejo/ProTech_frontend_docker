@@ -13,7 +13,7 @@ export class ListaCategoriasComponent implements OnInit {
   categorias: Categoria[] = [];
   cargando = true;
   error = '';
-  imagenBaseUrl = 'http://localhost:3000/uploads/';
+  imagenBaseUrl = 'https://pro-tech-backend.vercel.app/uploads/';
 
   constructor(private categoriaService: CategoriaService) {}
 

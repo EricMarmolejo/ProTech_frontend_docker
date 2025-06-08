@@ -27,7 +27,7 @@ export class InicioComponent implements OnInit {
   categoriasDisponibles: string[] = [];
   cargando = false;
   error = '';
-  imagenBaseUrl = 'http://localhost:3000/uploads/';
+  imagenBaseUrl = 'https://pro-tech-backend.vercel.app/uploads/';
   currentIndex = 0;
   intervalId: any;
   productosPorVista = 2;
