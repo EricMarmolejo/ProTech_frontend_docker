@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PerfilService {
-  private apiUrl = 'http://localhost:3000/api/Perfil';
-  private direccionesUrl = 'http://localhost:3000/api/direcciones';
+  private apiUrl = 'https://pro-tech-backend.vercel.app/api/Perfil';
+  private direccionesUrl = 'https://pro-tech-backend.vercel.app/api/direcciones';
 
   constructor(private http: HttpClient) {}
 

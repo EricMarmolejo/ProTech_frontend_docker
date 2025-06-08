@@ -55,7 +55,7 @@
 
     <!-- Imagen del avatar o avatar por defecto -->
     <ng-container *ngIf="usuario.avatarUrl; else avatarPlaceholder">
-      <img [src]="'http://localhost:3000' + usuario.avatarUrl" class="usuario-avatar" alt="{{ usuario.nombre }}" />
+      <img [src]="'https://pro-tech-backend.vercel.app' + usuario.avatarUrl" class="usuario-avatar" alt="{{ usuario.nombre }}" />
     </ng-container>
     <ng-template #avatarPlaceholder>
       <div class="usuario-avatar"></div>

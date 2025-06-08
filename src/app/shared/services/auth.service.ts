@@ -22,7 +22,7 @@ interface DecodedToken {
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:3000/api/auth'; // Cambia según tu URL real
+  private baseUrl = 'https://pro-tech-backend.vercel.app/api/auth'; // Cambia según tu URL real
   private tokenKey = 'auth_token';
   private rolKey = 'rol';
   private usuarioKey = 'usuario';

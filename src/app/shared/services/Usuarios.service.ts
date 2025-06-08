@@ -18,7 +18,7 @@ export interface Usuario {
   providedIn: 'root'
 })
 export class UsuarioService {
-  private baseUrl = 'http://localhost:3000/api/Perfil';
+  private baseUrl = 'https://pro-tech-backend.vercel.app/api/Perfil';
   private adminUrl = `${this.baseUrl}/admin/usuarios`;
 
   constructor(private http: HttpClient) {}

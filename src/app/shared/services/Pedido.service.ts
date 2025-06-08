@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-const API_URL = 'http://localhost:3000/api/pedidos';
+const API_URL = 'https://pro-tech-backend.vercel.app/api/pedidos';
 
 export interface PedidoItem {
   producto: string;

@@ -24,7 +24,7 @@ export class ListaProductosComponent implements OnInit {
   productos: any[] = [];
   cargando = false;
   error = '';
-  imagenBaseUrl = 'http://localhost:3000/uploads/';
+  imagenBaseUrl = 'https://pro-tech-backend.vercel.app/uploads/';
   categoriaNombre: string = '';
   busqueda: string = '';
   filtroCategoria: string = '';

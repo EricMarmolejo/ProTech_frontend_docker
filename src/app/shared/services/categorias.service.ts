@@ -13,7 +13,7 @@ export interface Categoria {
   providedIn: 'root',
 })
 export class CategoriaService {
-  private baseUrl = 'http://localhost:3000/api/categorias';
+  private baseUrl = 'https://pro-tech-backend.vercel.app/api/categorias';
 
   constructor(private http: HttpClient) {}
 
