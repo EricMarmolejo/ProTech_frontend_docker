@@ -19,6 +19,7 @@ import { ResumenOrdenComponent } from './orden/resumen-orden/resumen-orden.compo
 import { PedidosClientesComponent } from './Pedidos/pedidos-clientes/pedidos-clientes.component';
 import { PedidosAdminComponent } from './Pedidos/pedidos-admin/pedidos-admin.component';
 import { VerDetalleComponent } from './Pedidos/ver-detalle/ver-detalle.component';
+import { EditarCategoriaComponent } from './categorias/editar-categoria/editar-categoria.component';
 
 export const routes: Routes = [
   // Rutas públicas
@@ -52,7 +53,7 @@ export const routes: Routes = [
       {
         path: 'lista_productos',
         component: ListaProductosComponent,
-        title: 'Productos'
+        title: 'Productos',
       },
       {
         path: 'reportes',
@@ -76,32 +77,32 @@ export const routes: Routes = [
       },
       {
         path: 'producto/:id',
-        component:DetalleProductoComponent,
+        component: DetalleProductoComponent,
       },
       {
         path: 'carrito',
-        component:CarritoComponent,
-        title:'Carrito de compras'
+        component: CarritoComponent,
+        title: 'Carrito de compras',
       },
       {
-        path:'resumen-orden',
+        path: 'resumen-orden',
         component: ResumenOrdenComponent,
-        title: 'Resumen de la orden'
+        title: 'Resumen de la orden',
       },
       {
-        path:'Mis_pedidos',
-        component:PedidosClientesComponent,
-        title: 'Mis pedidos'
+        path: 'Mis_pedidos',
+        component: PedidosClientesComponent,
+        title: 'Mis pedidos',
       },
       {
-        path:'Pedidos',
-        component:PedidosAdminComponent,
-        title:'Pedidos'
+        path: 'Pedidos',
+        component: PedidosAdminComponent,
+        title: 'Pedidos',
       },
       {
-        path:'Pedidos/:id',
-        component:VerDetalleComponent,
-        title:'Detalle pedido'
+        path: 'Pedidos/:id',
+        component: VerDetalleComponent,
+        title: 'Detalle pedido',
       },
       {
         path: 'stock/:idProducto/:tipo',
@@ -125,6 +126,11 @@ export const routes: Routes = [
         title: 'Gestion de categorias',
       },
       {
+        path: 'categoria/editar/:id',
+        component:EditarCategoriaComponent,
+        title: 'Editar categoria',
+      },
+      {
         path: 'productos/editar/:id',
         component: EditarProductosComponent, // o un componente separado si prefieres
         title: 'Editar producto',
@@ -136,6 +142,11 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: '',
+    redirectTo: '/login',
+    pathMatch: 'full',
+  },
 
   // Ruta para 404
   {
@@ -144,7 +155,7 @@ export const routes: Routes = [
     component: NotFoundComponent,
   },
   {
-    path:'',
+    path: '',
     redirectTo: '/login',
     pathMatch: 'full',
   },

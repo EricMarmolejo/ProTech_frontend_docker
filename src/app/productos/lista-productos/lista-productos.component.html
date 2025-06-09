@@ -24,7 +24,7 @@
       class="categoria-card"
       [class.activa]="filtroCategoria === cat.nombre"
       (click)="seleccionarCategoria(cat.nombre)">
-      <img [src]="imagenBaseUrl + cat.imagen" alt="{{ cat.nombre }}" (error)="onImageError($event)" />
+      <img [src]="cat.imagen" alt="{{ cat.nombre }}" (error)="onImageError($event)" />
       <div>{{ cat.nombre }}</div>
     </div>
   </div>
@@ -55,7 +55,7 @@
   <div class="product-card" *ngFor="let producto of productosFiltrados()">
     <div class="imagen-contenedor">
       <img *ngIf="producto.imagen"
-           [src]="imagenBaseUrl + producto.imagen"
+           [src]="producto.imagen"
            [alt]="'Imagen de ' + producto.nombre"
            class="producto-img"
            (error)="onImageError($event)" />

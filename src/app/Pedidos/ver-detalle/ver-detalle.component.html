@@ -47,7 +47,7 @@
       <li *ngFor="let item of pedido.productos">
         <img 
           class="producto-imagen" 
-          [src]="item.producto.imagen ? 'https://pro-tech-backend.vercel.app/uploads/' + item.producto.imagen : 'assets/default-product.png'" 
+          [src]="item.producto.imagen ? item.producto.imagen : 'assets/default-product.png'" 
           alt="{{ item.producto.nombre }}" 
           loading="lazy"
         />

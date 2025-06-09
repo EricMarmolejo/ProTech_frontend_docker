@@ -1,10 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
 
-import { ProductoService, Producto } from '../../shared/services/productos.service';
-import { CategoriaService, Categoria } from '../../shared/services/categorias.service';
+import {
+  ProductoService,
+  Producto,
+} from '../../shared/services/productos.service';
+import {
+  CategoriaService,
+  Categoria,
+} from '../../shared/services/categorias.service';
+import { ReutilizableService } from '../../shared/services/reutilizable.service';
 
 @Component({
   selector: 'app-agregar-productos',
@@ -17,14 +28,13 @@ export class AgregarProductosComponent implements OnInit {
   productoform: FormGroup;
   imagenFile: File | null = null;
   nombreArchivo: string = '';
-
   categorias: Categoria[] = [];
-  errorCategorias: string = '';
 
   constructor(
     private fb: FormBuilder,
     private productoService: ProductoService,
-    private categoriaService: CategoriaService
+    private categoriaService: CategoriaService,
+    private alertService: ReutilizableService
   ) {
     this.productoform = this.fb.group({
       nombre: ['', Validators.required],
@@ -32,7 +42,7 @@ export class AgregarProductosComponent implements OnInit {
       precio: ['', [Validators.required, Validators.min(0)]],
       caracteristicas: [''],
       categoria: ['', Validators.required],
-      imagen: [null]
+      imagen: [null],
     });
   }
 
@@ -43,29 +53,15 @@ export class AgregarProductosComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar categorías', err);
-        this.errorCategorias = 'No se pudieron cargar las categorías.';
-      }
+        this.alertService.error(
+          'Error',
+          'No se pudieron cargar las categorías.'
+        );
+      },
     });
   }
 
-  private mostrarAlerta(
-    icon: 'success' | 'error' | 'warning' | 'info',
-    title: string,
-    text?: string
-  ): void {
-    Swal.fire({
-      icon,
-      title,
-      text,
-      background: '#1a1d2e',
-      color: '#fff',
-      iconColor: icon === 'success' ? '#4c7fdc' : '#e74c3c',
-      confirmButtonColor: '#4c7fdc',
-      customClass: { popup: 'swal2-dark' }
-    });
-  }
-
-  onFileChange(event: any) {
+  onFileChange(event: any): void {
     const file = event.target.files[0];
     if (file) {
       this.nombreArchivo = file.name;
@@ -74,37 +70,49 @@ export class AgregarProductosComponent implements OnInit {
     }
   }
 
-  submit() {
+  submit(): void {
     if (this.productoform.invalid) {
-      this.mostrarAlerta('error', 'Formulario inválido', 'Por favor complete todos los campos obligatorios.');
+      this.alertService.error(
+        'Formulario inválido',
+        'Por favor complete todos los campos obligatorios.'
+      );
       return;
     }
 
     const formValue = this.productoform.value;
-    const productoData: any = {
-      nombre: formValue.nombre,
-      descripcion: formValue.descripcion,
-      precio: formValue.precio,
-      categoria: formValue.categoria,
-      caracteristicas: formValue.caracteristicas
-        ? formValue.caracteristicas.split(',').map((c: string) => c.trim())
-        : [],
-      imagen: this.imagenFile
-    };
+    const formData = new FormData();
+
+    formData.append('nombre', formValue.nombre);
+    formData.append('descripcion', formValue.descripcion || '');
+    formData.append('precio', formValue.precio.toString());
+    formData.append('categoria', formValue.categoria); // Enviamos el _id directamente como string
+
+    // Convertir características a JSON string (ej: ["4K","HDR"])
+    const caracteristicasArray = formValue.caracteristicas
+      ? formValue.caracteristicas.split(',').map((c: string) => c.trim())
+      : [];
+    formData.append('caracteristicas', JSON.stringify(caracteristicasArray));
+
+    if (this.imagenFile) {
+      formData.append('imagen', this.imagenFile);
+    }
 
     const token = localStorage.getItem('auth_token') || '';
 
-    this.productoService.crearProducto(productoData, token).subscribe({
+    this.productoService.crearProducto(formData, token).subscribe({
       next: (res: Producto) => {
-        this.mostrarAlerta('success', 'Producto agregado', `Producto ${res.nombre} agregado con éxito.`);
+        this.alertService.success(
+          'Producto agregado',
+          `Producto ${res.nombre} agregado con éxito.`
+        );
         this.productoform.reset();
         this.imagenFile = null;
         this.nombreArchivo = '';
       },
       error: (err) => {
         const mensajeError = err.error?.error || 'Error al agregar producto';
-        this.mostrarAlerta('error', 'Error', mensajeError);
-      }
+        this.alertService.error('Error', mensajeError);
+      },
     });
   }
 }

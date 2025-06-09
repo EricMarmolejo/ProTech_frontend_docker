@@ -172,7 +172,7 @@ async generarFactura(): Promise<void> {
     }
 
     const url = item.producto.imagen
-      ? `https://pro-tech-backend.vercel.app/uploads/${item.producto.imagen}`
+      ? item.producto.imagen
       : 'assets/default-product.png';
 
     try {

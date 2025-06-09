@@ -3,7 +3,7 @@
 
   <section class="perfil-card" aria-label="Información del perfil">
     <div class="avatar-section">
-      <img [src]="perfil.avatarUrl ? 'https://pro-tech-backend.vercel.app' + perfil.avatarUrl : 'assets/default-avatar.png'"
+      <img [src]="perfil.avatarUrl ? perfil.avatarUrl : 'assets/default-avatar.png'"
         alt="Avatar de usuario" class="avatar-img" />
       <label for="avatarInput" class="file-label" tabindex="0">
         Cambiar avatar

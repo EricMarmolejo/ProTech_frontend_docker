@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { CategoriaService, Categoria } from '../../shared/services/categorias.service';
+import {
+  CategoriaService,
+  Categoria,
+} from '../../shared/services/categorias.service';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-lista-categorias',
   templateUrl: './lista-categorias.component.html',
   styleUrls: ['./lista-categorias.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule],
 })
 export class ListaCategoriasComponent implements OnInit {
   categorias: Categoria[] = [];
@@ -15,7 +19,10 @@ export class ListaCategoriasComponent implements OnInit {
   error = '';
   imagenBaseUrl = 'https://pro-tech-backend.vercel.app/uploads/';
 
-  constructor(private categoriaService: CategoriaService) {}
+  constructor(
+    private categoriaService: CategoriaService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.categoriaService.listarCategorias().subscribe({
@@ -26,24 +33,23 @@ export class ListaCategoriasComponent implements OnInit {
       error: (err) => {
         this.error = 'Error al cargar categorías';
         this.cargando = false;
-      }
+      },
     });
-  }
-   editarCategoria(categoria: Categoria): void {
-    console.log('Editar categoría:', categoria);
-    // Aquí puedes redirigir o abrir un modal
   }
 
   eliminarCategoria(id: string): void {
     if (confirm('¿Estás seguro de eliminar esta categoría?')) {
       this.categoriaService.eliminarCategoria(id).subscribe({
         next: () => {
-          this.categorias = this.categorias.filter(cat => cat._id !== id);
+          this.categorias = this.categorias.filter((cat) => cat._id !== id);
         },
         error: () => {
           this.error = 'Error al eliminar la categoría';
-        }
+        },
       });
     }
+  }
+  editarCategoria(id: string): void {
+    this.router.navigate(['/dashboard/categoria/editar/', id]);
   }
 }

@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+
 import {
   ProductoService,
   Producto,
   Categoria,
 } from '../../shared/services/productos.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CategoriaService } from '../../shared/services/categorias.service';
-import Swal from 'sweetalert2';
+import { ReutilizableService } from '../../shared/services/reutilizable.service';
 
 @Component({
   selector: 'app-editar-productos',
@@ -30,31 +36,15 @@ export class EditarProductosComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private productoService: ProductoService,
-    private categoriaService: CategoriaService
+    private categoriaService: CategoriaService,
+    private alertService: ReutilizableService
   ) {}
 
   ngOnInit(): void {
     this.productoId = this.route.snapshot.paramMap.get('id')!;
+    this.inicializarFormulario();
     this.cargarCategorias();
     this.cargarProducto();
-    this.inicializarFormulario();
-  }
-
-  private mostrarAlerta(
-    icon: 'success' | 'error' | 'warning' | 'info',
-    title: string,
-    text?: string
-  ): void {
-    Swal.fire({
-      icon,
-      title,
-      text,
-      background: '#1a1d2e',
-      color: '#fff',
-      iconColor: icon === 'success' ? '#4c7fdc' : '#e74c3c',
-      confirmButtonColor: '#4c7fdc',
-      customClass: { popup: 'swal2-dark' },
-    });
   }
 
   inicializarFormulario(): void {
@@ -95,10 +85,9 @@ export class EditarProductosComponent implements OnInit {
     }
   }
 
-  submit() {
+  submit(): void {
     if (this.productoForm.invalid) {
-      this.mostrarAlerta(
-        'error',
+      this.alertService.error(
         'Formulario inválido',
         'Por favor complete todos los campos obligatorios.'
       );
@@ -106,6 +95,7 @@ export class EditarProductosComponent implements OnInit {
     }
 
     const valores = this.productoForm.value;
+    const token = localStorage.getItem('auth_token') || '';
 
     const productoData: any = {
       nombre: valores.nombre,
@@ -114,7 +104,6 @@ export class EditarProductosComponent implements OnInit {
       categoria: valores.categoria,
     };
 
-    // Verificar que caracteristicas exista y sea string no vacío
     if (
       typeof valores.caracteristicas === 'string' &&
       valores.caracteristicas.trim() !== ''
@@ -124,15 +113,30 @@ export class EditarProductosComponent implements OnInit {
         .map((c: string) => c.trim())
         .filter((c: string) => c.length > 0);
     }
+    console.log('Valores:' + valores);
+    console.log('Producto data: ' + productoData.nombre);
+    console.log('Imagen: ' + this.imagen);
+    const formData = new FormData();
+    formData.append('nombre', productoData.nombre);
+    formData.append('descripcion', productoData.descripcion);
+    formData.append('precio', productoData.precio.toString());
+    formData.append('categoria', productoData.categoria);
 
-    const token = localStorage.getItem('auth_token') || '';
+    if (productoData.caracteristicas) {
+      productoData.caracteristicas.forEach((c: string, i: number) => {
+        formData.append(`caracteristicas[${i}]`, c);
+      });
+    }
+
+    if (this.imagen) {
+      formData.append('imagen', this.imagen);
+    }
 
     this.productoService
-      .actualizarProducto(this.productoId, productoData, token)
+      .actualizarProducto(this.productoId, formData, token)
       .subscribe({
         next: (res: Producto) => {
-          this.mostrarAlerta(
-            'success',
+          this.alertService.success(
             'Producto actualizado',
             `Producto ${res.nombre} actualizado con éxito.`
           );
@@ -141,7 +145,7 @@ export class EditarProductosComponent implements OnInit {
         error: (err) => {
           const mensajeError =
             err.error?.mensaje || 'Error al actualizar producto';
-          this.mostrarAlerta('error', 'Error', mensajeError);
+          this.alertService.error('Error', mensajeError);
         },
       });
   }

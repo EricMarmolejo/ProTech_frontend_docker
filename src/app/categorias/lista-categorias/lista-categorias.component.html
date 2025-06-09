@@ -3,8 +3,12 @@
 
 <div class="cards-container" *ngIf="!cargando && !error">
   <div class="card" *ngFor="let categoria of categorias">
-    <img *ngIf="categoria.imagen" [src]="imagenBaseUrl + categoria.imagen" alt="{{ categoria.nombre }}" />
+    <img *ngIf="categoria.imagen" [src]="categoria.imagen" alt="{{ categoria.nombre }}" />
     <h3>{{ categoria.nombre }}</h3>
     <p>{{ categoria.descripcion }}</p>
+
+    <div class="card-actions">
+      <button class="btn edit" (click)="editarCategoria(categoria._id)">Editar</button>
+    </div>
   </div>
 </div>

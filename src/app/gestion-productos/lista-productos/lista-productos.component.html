@@ -49,7 +49,7 @@
     <div class="imagen-contenedor">
       <img
         *ngIf="producto.imagen"
-        [src]="imagenBaseUrl + producto.imagen"
+        [src]="producto.imagen"
         [alt]="'Imagen de ' + producto.nombre"
         class="producto-img"
       />

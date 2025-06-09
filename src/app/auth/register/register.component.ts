@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
-import Swal from 'sweetalert2';
+import { ReutilizableService } from '../../shared/services/reutilizable.service'; // Importa el servicio
 
 @Component({
   selector: 'app-register',
@@ -26,10 +26,12 @@ export class RegisterComponent {
   showConfirmPassword = false;
   selectedAvatarFile: File | null = null;
   maxDate!: string;
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private alertService: ReutilizableService // Inyectado
   ) {
     this.maxDate = new Date().toISOString().split('T')[0];
     this.registerForm = this.fb.group(
@@ -44,25 +46,6 @@ export class RegisterComponent {
       },
       { validators: this.passwordsMatchValidator }
     );
-  }
-
-   private mostrarAlerta(
-    icon: 'success' | 'error' | 'warning' | 'info',
-    title: string,
-    text?: string
-  ): void {
-    Swal.fire({
-      icon,
-      title,
-      text,
-      background: '#1a1d2e',
-      color: '#fff',
-      iconColor: icon === 'success' ? '#4c7fdc' : '#e74c3c',
-      confirmButtonColor: '#4c7fdc',
-      customClass: {
-        popup: 'swal2-dark'
-      }
-    });
   }
 
   get f() {
@@ -83,10 +66,10 @@ export class RegisterComponent {
     return password === confirmPassword ? null : { passwordMismatch: true };
   }
 
- onSubmit() {
+  onSubmit() {
     if (this.registerForm.invalid || !this.selectedAvatarFile) {
       this.registerForm.markAllAsTouched();
-      this.mostrarAlerta('error', 'Formulario inválido', 'Por favor completa el formulario correctamente.');
+      this.alertService.error('Formulario inválido', 'Por favor completa el formulario correctamente.');
       return;
     }
 
@@ -104,20 +87,12 @@ export class RegisterComponent {
 
     this.authService.registrarUsuario(formData).subscribe({
       next: () => {
-        Swal.fire({
-          icon: 'success',
-          title: '¡Registro exitoso!',
-          text: 'Serás redirigido al login.',
-          background: '#1a1d2e',
-          color: '#fff',
-          iconColor: '#4c7fdc',
-          confirmButtonColor: '#4c7fdc',
-          customClass: { popup: 'swal2-dark' }
-        }).then(() => this.router.navigate(['/login']));
+        this.alertService.success('¡Registro exitoso!', 'Serás redirigido al login.')
+          .then(() => this.router.navigate(['/login']));
       },
       error: (error) => {
         const msg = error.error?.message || 'Error al registrar el usuario.';
-        this.mostrarAlerta('error', 'Registro fallido', msg);
+        this.alertService.error('Registro fallido', msg);
       }
     });
   }

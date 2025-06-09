@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StockService } from '../shared/services/stock.service';
+import { ReutilizableService } from '../shared/services/reutilizable.service';
 
 @Component({
   selector: 'app-formulario-stock',
@@ -16,14 +17,13 @@ export class FormularioStockComponent implements OnInit {
   idProducto: string = '';
   cantidad: number = 1;
   observaciones: string = '';
-  error: string = '';
-  mensaje: string = '';
   cargando = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private stockService: StockService
+    private stockService: StockService,
+    private alertService: ReutilizableService
   ) {}
 
   ngOnInit(): void {
@@ -34,21 +34,21 @@ export class FormularioStockComponent implements OnInit {
       if (tipo === 'entrada' || tipo === 'salida') {
         this.tipoMovimiento = tipo;
       } else {
-        this.error = 'Tipo de movimiento no válido';
+        this.alertService.error('Error', 'Tipo de movimiento no válido');
         return;
       }
 
       if (id) {
         this.idProducto = id;
       } else {
-        this.error = 'Producto no especificado';
+        this.alertService.error('Error', 'Producto no especificado');
       }
     });
   }
 
   registrarMovimiento(): void {
     if (!this.cantidad || this.cantidad <= 0) {
-      this.error = 'La cantidad debe ser mayor a cero';
+      this.alertService.error('Cantidad inválida', 'La cantidad debe ser mayor a cero');
       return;
     }
 
@@ -62,13 +62,11 @@ export class FormularioStockComponent implements OnInit {
     this.cargando = true;
     this.stockService.registrarMovimiento(movimiento).subscribe({
       next: () => {
-        this.mensaje = 'Movimiento registrado correctamente ✅';
-        setTimeout(() => {
-          this.router.navigate(['/dashboard/productos']);
-        }, 1500);
+        this.alertService.success('Movimiento registrado', 'El movimiento fue guardado correctamente.')
+          .then(() => this.router.navigate(['/dashboard/productos']));
       },
       error: (err) => {
-        this.error = 'Error al registrar el movimiento';
+        this.alertService.error('Error', 'No se pudo registrar el movimiento');
         console.error(err);
         this.cargando = false;
       }

@@ -3,7 +3,8 @@ import { CommonModule } from '@angular/common';
 import { PedidoService } from '../../shared/services/Pedido.service';
 import { HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { PaginadorComponent } from '../../paginador/paginador.component'; // Ajusta si la ruta cambia
+import { PaginadorComponent } from '../../paginador/paginador.component';
+import { ReutilizableService } from '../../shared/services/reutilizable.service';
 
 @Component({
   selector: 'app-pedidos-admin',
@@ -14,8 +15,8 @@ import { PaginadorComponent } from '../../paginador/paginador.component'; // Aju
   providers: [PedidoService],
 })
 export class PedidosAdminComponent implements OnInit {
-  todosLosPedidos: any[] = []; // Todos los pedidos
-  pedidos: any[] = [];         // Pedidos visibles según paginación
+  todosLosPedidos: any[] = [];
+  pedidos: any[] = [];
   cargando = true;
   error: string | null = null;
 
@@ -25,8 +26,9 @@ export class PedidosAdminComponent implements OnInit {
 
   constructor(
     private pedidoService: PedidoService,
-    private router: Router
-  ) { }
+    private router: Router,
+    private alertService: ReutilizableService
+  ) {}
 
   ngOnInit(): void {
     this.pedidoService.obtenerTodosLosPedidos().subscribe({
@@ -44,36 +46,38 @@ export class PedidosAdminComponent implements OnInit {
     });
   }
 
-  actualizarPedidos() {
+  actualizarPedidos(): void {
     const inicio = (this.paginaActual - 1) * this.tamanioPagina;
     const fin = inicio + this.tamanioPagina;
-    // Asegurar nuevo array para detección de cambios
     this.pedidos = [...this.todosLosPedidos.slice(inicio, fin)];
   }
 
-  cambiarPagina(pagina: number) {
+  cambiarPagina(pagina: number): void {
     this.paginaActual = pagina;
     this.actualizarPedidos();
   }
 
-  abrirCambiarEstado(pedido: any) {
-      if(!confirm('¿Deseas marcar este pedido como ENVIADO?')) return;
+  async abrirCambiarEstado(pedido: any): Promise<void> {
+    const confirmado = await this.alertService.confirmDialog(
+      'Confirmar cambio de estado',
+      '¿Deseas marcar este pedido como ENVIADO?'
+    );
 
-    this.pedidoService
-      .actualizarEstadoPedido(pedido._id, 'enviado')
-      .subscribe({
-        next: (pedidoActualizado) => {
-          pedido.estado = pedidoActualizado.estado;
-          alert('Pedido marcado como ENVIADO');
-        },
-        error: (err) => {
-          console.error('Error al actualizar estado:', err);
-          alert('No se pudo cambiar el estado del pedido.');
-        },
-      });
+    if (!confirmado) return;
+
+    this.pedidoService.actualizarEstadoPedido(pedido._id, 'enviado').subscribe({
+      next: (pedidoActualizado) => {
+        pedido.estado = pedidoActualizado.estado;
+        this.alertService.success('Estado actualizado', 'Pedido marcado como ENVIADO');
+      },
+      error: (err) => {
+        console.error('Error al actualizar estado:', err);
+        this.alertService.error('Error', 'No se pudo cambiar el estado del pedido.');
+      },
+    });
   }
 
-  verDetalle(pedidoId: string) {
+  verDetalle(pedidoId: string): void {
     this.router.navigate(['dashboard/Pedidos', pedidoId]);
   }
 }

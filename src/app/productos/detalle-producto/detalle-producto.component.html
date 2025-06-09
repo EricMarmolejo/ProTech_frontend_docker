@@ -5,7 +5,7 @@
   <!-- Imagen del producto con fondo blanco -->
   <div class="imagen-container" *ngIf="producto.imagen">
     <img 
-      [src]="imagenBaseUrl + producto.imagen" 
+      [src]="producto.imagen" 
       [alt]="'Imagen de ' + producto.nombre"
       class="producto-img"
     />

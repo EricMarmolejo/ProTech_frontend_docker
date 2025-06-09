@@ -53,29 +53,28 @@ export class ProductoService {
     return this.http.post<Producto[]>(`${this.apiUrl}/filtro`, filtro);
   }
 
-  // Crear nuevo producto (requiere token y rol admin)
-  crearProducto(productoData: any, token: string): Observable<Producto> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-    });
+// En producto.service.ts
+crearProducto(formData: FormData, token: string): Observable<Producto> {
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`,
+  });
 
-    const formData = this.buildFormData(productoData);
+  return this.http.post<Producto>(this.apiUrl, formData, { headers });
+}
 
-    return this.http.post<Producto>(this.apiUrl, formData, { headers });
-  }
 
   // Actualizar producto existente (requiere token y rol admin)
   actualizarProducto(
     id: string,
-    productoData: any,
+    formData: FormData,
     token: string
   ): Observable<Producto> {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
+      // NO poner Content-Type aquí
     });
 
-    return this.http.patch<Producto>(`${this.apiUrl}/${id}`, productoData, {
+    return this.http.patch<Producto>(`${this.apiUrl}/${id}`, formData, {
       headers,
     });
   }
@@ -92,16 +91,25 @@ export class ProductoService {
   private buildFormData(data: any): FormData {
     const formData = new FormData();
     formData.append('nombre', data.nombre);
-    formData.append('precio', data.precio);
-    formData.append('categoria', data.categoria);
-    formData.append('descripcion', data.descripcion);
+    formData.append(
+      'precio',
+      data.precio != null ? data.precio.toString() : '0'
+    );
+    formData.append('descripcion', data.descripcion || '');
 
+    // ✅ AÑADIR LA CATEGORÍA COMO _id
+    if (data.categoria) {
+      formData.append('categoria', data.categoria); // <-- Aquí estaba faltando
+    }
+
+    // Características como arreglo
     if (data.caracteristicas && Array.isArray(data.caracteristicas)) {
       data.caracteristicas.forEach((c: string, index: number) => {
         formData.append(`caracteristicas[${index}]`, c);
       });
     }
 
+    // Imagen si existe
     if (data.imagen) {
       formData.append('imagen', data.imagen);
     }

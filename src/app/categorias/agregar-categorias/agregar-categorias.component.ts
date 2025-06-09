@@ -6,12 +6,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
-
-import {
-  CategoriaService,
-  Categoria,
-} from '../../shared/services/categorias.service';
+import { CategoriaService, Categoria } from '../../shared/services/categorias.service';
+import { ReutilizableService } from '../../shared/services/reutilizable.service'; // Asegúrate de importar correctamente
 
 @Component({
   selector: 'app-agregar-categorias',
@@ -27,28 +23,12 @@ export class AgregarCategoriasComponent {
 
   constructor(
     private fb: FormBuilder,
-    private categoriaService: CategoriaService
+    private categoriaService: CategoriaService,
+    private alertService: ReutilizableService
   ) {
     this.categoriaForm = this.fb.group({
       nombre: ['', Validators.required],
       descripcion: [''],
-    });
-  }
-
-  private mostrarAlerta(
-    icon: 'success' | 'error' | 'warning' | 'info',
-    title: string,
-    text?: string
-  ): void {
-    Swal.fire({
-      icon,
-      title,
-      text,
-      background: '#1a1d2e',
-      color: '#fff',
-      iconColor: icon === 'success' ? '#4c7fdc' : '#e74c3c',
-      confirmButtonColor: '#4c7fdc',
-      customClass: { popup: 'swal2-dark' },
     });
   }
 
@@ -62,8 +42,7 @@ export class AgregarCategoriasComponent {
 
   submit(): void {
     if (this.categoriaForm.invalid) {
-      this.mostrarAlerta(
-        'error',
+      this.alertService.error(
         'Formulario inválido',
         'Por favor completa todos los campos obligatorios.'
       );
@@ -80,8 +59,7 @@ export class AgregarCategoriasComponent {
 
     this.categoriaService.crearCategoria(formData).subscribe({
       next: (res: Categoria) => {
-        this.mostrarAlerta(
-          'success',
+        this.alertService.success(
           'Categoría creada',
           `Categoría ${res.nombre} agregada con éxito.`
         );
@@ -91,7 +69,7 @@ export class AgregarCategoriasComponent {
       },
       error: (err) => {
         const mensajeError = err.error?.error || 'Error al crear categoría';
-        this.mostrarAlerta('error', 'Error', mensajeError);
+        this.alertService.error('Error', mensajeError);
       },
     });
   }

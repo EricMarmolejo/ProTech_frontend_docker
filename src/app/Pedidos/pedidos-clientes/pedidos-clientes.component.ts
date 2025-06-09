@@ -4,25 +4,26 @@ import { PedidoService } from '../../shared/services/Pedido.service';
 import { PerfilService } from '../../shared/services/Perfil.service';
 import { Router } from '@angular/router';
 import { PaginadorComponent } from '../../paginador/paginador.component';
+import { ReutilizableService } from '../../shared/services/reutilizable.service';
 
 @Component({
   selector: 'app-pedidos-clientes',
   standalone: true,
-  imports: [CommonModule,PaginadorComponent],
+  imports: [CommonModule, PaginadorComponent],
   templateUrl: './pedidos-clientes.component.html',
   styleUrl: './pedidos-clientes.component.css',
 })
 export class PedidosClientesComponent implements OnInit {
   private pedidoService = inject(PedidoService);
   private perfilService = inject(PerfilService);
-
-  constructor(private router: Router) {}
+  private reusable = inject(ReutilizableService);
+  private router = inject(Router);
 
   pedidos: any[] = [];
   cargando = true;
   error = '';
   paginaActual = 1;
-  tamanioPagina = 4; // Puedes ajustarlo según el tamaño deseado
+  tamanioPagina = 4;
 
   ngOnInit(): void {
     const usuarioId = this.perfilService.getUserIdFromToken();
@@ -45,47 +46,52 @@ export class PedidosClientesComponent implements OnInit {
       },
     });
   }
+
   verDetalle(pedido: any) {
-    console.log('Detalle del pedido:', pedido);
     this.router.navigate(['dashboard/Pedidos', pedido._id]);
   }
-  cancelarPedido(pedido: any): void {
-    if (!confirm('¿Seguro que deseas cancelar este pedido?')) return;
 
-    this.pedidoService
-      .actualizarEstadoPedido(pedido._id, 'cancelado')
-      .subscribe({
-        next: (pedidoActualizado) => {
-          pedido.estado = pedidoActualizado.estado;
-          alert('Pedido cancelado');
-        },
-        error: (err) => {
-          console.error('Error al cancelar:', err);
-          alert('No se pudo cancelar el pedido.');
-        },
-      });
+  async cancelarPedido(pedido: any): Promise<void> {
+    const confirmado = await this.reusable.confirmDialog(
+      'Cancelar pedido',
+      '¿Seguro que deseas cancelar este pedido?'
+    );
+    if (!confirmado) return;
+
+    this.pedidoService.actualizarEstadoPedido(pedido._id, 'cancelado').subscribe({
+      next: (pedidoActualizado) => {
+        pedido.estado = pedidoActualizado.estado;
+        this.reusable.success('Pedido cancelado', 'El pedido fue cancelado con éxito.');
+      },
+      error: (err) => {
+        console.error('Error al cancelar:', err);
+        this.reusable.error('Error', 'No se pudo cancelar el pedido.');
+      },
+    });
   }
 
-  confirmarEntrega(pedido: any): void {
-    if (!confirm('¿Deseas marcar este pedido como ENTREGADO?')) return;
+  async confirmarEntrega(pedido: any): Promise<void> {
+    const confirmado = await this.reusable.confirmDialog(
+      'Confirmar entrega',
+      '¿Deseas marcar este pedido como ENTREGADO?'
+    );
+    if (!confirmado) return;
 
-    this.pedidoService
-      .actualizarEstadoPedido(pedido._id, 'entregado')
-      .subscribe({
-        next: (pedidoActualizado) => {
-          pedido.estado = pedidoActualizado.estado;
-          alert('Pedido marcado como ENTREGADO');
-        },
-        error: (err) => {
-          console.error('Error al actualizar estado:', err);
-          alert('No se pudo cambiar el estado del pedido.');
-        },
-      });
+    this.pedidoService.actualizarEstadoPedido(pedido._id, 'entregado').subscribe({
+      next: (pedidoActualizado) => {
+        pedido.estado = pedidoActualizado.estado;
+        this.reusable.success('Pedido entregado', 'El pedido fue marcado como entregado.');
+      },
+      error: (err) => {
+        console.error('Error al actualizar estado:', err);
+        this.reusable.error('Error', 'No se pudo cambiar el estado del pedido.');
+      },
+    });
   }
+
   pedidosPaginados(): any[] {
-  const inicio = (this.paginaActual - 1) * this.tamanioPagina;
-  const fin = inicio + this.tamanioPagina;
-  return this.pedidos.slice(inicio, fin);
-}
-
+    const inicio = (this.paginaActual - 1) * this.tamanioPagina;
+    const fin = inicio + this.tamanioPagina;
+    return this.pedidos.slice(inicio, fin);
+  }
 }
