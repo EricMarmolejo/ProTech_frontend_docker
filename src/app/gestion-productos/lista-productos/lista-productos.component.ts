@@ -33,7 +33,7 @@ export class ListaProductosComponent implements OnInit {
   precioMax: string | null = null;
 
   paginaActual = 1;
-  tamanioPagina = 3;
+  tamanioPagina = 2;
 
   constructor(
     private productoService: ProductoService,

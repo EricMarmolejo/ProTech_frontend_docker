@@ -53,8 +53,7 @@
         <div class="product-card">
           <!-- contenido producto igual al que ya tienes -->
           <div class="imagen-contenedor">
-            <img [src]="producto.imagen" [alt]="producto.nombre"
-              class="producto-img" />
+            <img [src]="producto.imagen" [alt]="producto.nombre" class="producto-img" />
           </div>
 
           <h3 class="nombre">{{ producto.nombre }}</h3>
@@ -85,7 +84,10 @@
 
           <div class="buttons">
             <button class="btn primary" (click)="verDetalles(producto._id)">Ver detalles</button>
-            <button class="btn" (click)="agregarAlCarrito(producto)">Agregar al carrito</button>
+            <button class="btn" (click)="agregarAlCarrito(producto)" [disabled]="producto.stock == 0">
+              Agregar al carrito
+            </button>
+
           </div>
         </div>
       </div>

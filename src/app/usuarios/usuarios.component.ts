@@ -29,7 +29,7 @@ export class UsuariosComponent implements OnInit {
       correo: '',
       rol: 'cliente',
       genero: 'otro',
-      contrasena: '',
+      password: '',
     };
   }
 
@@ -61,33 +61,41 @@ export class UsuariosComponent implements OnInit {
   }
 
   guardarUsuario(): void {
-    if (!this.usuarioSeleccionado.nombre || !this.usuarioSeleccionado.correo || !this.usuarioSeleccionado.rol) {
-      alert('Por favor completa todos los campos requeridos');
-      return;
-    }
+  const { nombre, correo, rol, password } = this.usuarioSeleccionado;
 
-    const formData = this.construirFormData(this.usuarioSeleccionado, this.avatarFile || undefined);
-
-    if (this.usuarioSeleccionado._id) {
-      this.usuarioService.actualizarUsuario(this.usuarioSeleccionado._id, formData).subscribe({
-        next: () => {
-          this.obtenerUsuarios();
-          this.usuarioSeleccionado = this.usuarioInicial();
-          this.avatarFile = null;
-        },
-        error: (err) => console.error('Error actualizando usuario', err),
-      });
-    } else {
-      this.usuarioService.crearUsuario(formData).subscribe({
-        next: () => {
-          this.obtenerUsuarios();
-          this.usuarioSeleccionado = this.usuarioInicial();
-          this.avatarFile = null;
-        },
-        error: (err) => console.error('Error creando usuario', err),
-      });
-    }
+  if (!nombre || !correo || !rol) {
+    alert('Por favor completa todos los campos requeridos');
+    return;
   }
+
+  if (!this.usuarioSeleccionado._id && (!password || password.length < 6)) {
+    alert('La contraseña debe tener al menos 6 caracteres');
+    return;
+  }
+
+  const formData = this.construirFormData(this.usuarioSeleccionado, this.avatarFile || undefined);
+
+  if (this.usuarioSeleccionado._id) {
+    this.usuarioService.actualizarUsuario(this.usuarioSeleccionado._id, formData).subscribe({
+      next: () => {
+        this.obtenerUsuarios();
+        this.usuarioSeleccionado = this.usuarioInicial();
+        this.avatarFile = null;
+      },
+      error: (err) => console.error('Error actualizando usuario', err),
+    });
+  } else {
+    this.usuarioService.crearUsuario(formData).subscribe({
+      next: () => {
+        this.obtenerUsuarios();
+        this.usuarioSeleccionado = this.usuarioInicial();
+        this.avatarFile = null;
+      },
+      error: (err) => console.error('Error creando usuario', err),
+    });
+  }
+}
+
 
   editarUsuario(usuario: Usuario): void {
     this.usuarioSeleccionado = { ...usuario };

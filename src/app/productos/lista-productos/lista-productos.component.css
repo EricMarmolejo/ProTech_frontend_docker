@@ -2,52 +2,74 @@
 .filtros {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: 20px;
+  gap: 24px;
+  padding: 24px;
   background: #2c2c2c;
-  border-radius: 12px;
-  margin: 20px;
+  border-radius: 14px;
+  margin: 20px auto;
   justify-content: center;
   align-items: flex-end;
   animation: fadeIn 0.7s ease-in-out;
+  max-width: 1200px;
 }
 
+/* Etiquetas de los filtros */
 .filtros label {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  min-width: auto;
   color: white;
-  font-weight: 500;
-  font-size: 14px;
 }
 
+
+/* Inputs de filtros */
 .filtros input {
-  padding: 6px;
-  border-radius: 5px;
-  border: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #444;
   outline: none;
-  margin-top: 4px;
-  background-color: #444;
+  margin-top: 6px;
+  background-color: #3a3a3a;
   color: white;
-  transition: box-shadow 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 14px;
+  flex: 1;
+  min-width: 200px;
 }
 
 .filtros input:focus {
-  box-shadow: 0 0 5px orange;
+  border-color: orange;
+  box-shadow: 0 0 8px rgba(255, 165, 0, 0.5);
 }
 
+/* Botón limpiar */
 .boton.limpiar {
-  background-color: #555;
+  background-color: #444;
   color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .boton.limpiar:hover {
-  background-color: crimson;
+  background-color: #e53935;
   transform: scale(1.05);
 }
+.filtros input[type="text"] {
+  width: 100%;
+  max-width: 400px;
+  height: 40px;
+  box-sizing: border-box;
+}
+
 
 /* FILTRO CATEGORÍAS */
 .filtro-categorias {

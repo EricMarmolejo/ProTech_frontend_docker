@@ -11,7 +11,7 @@ export interface Usuario {
   fechaNacimiento?: Date;
   avatarUrl?: string;
   genero?: 'masculino' | 'femenino' | 'otro';
-  contrasena?: string;
+  password?: string;
 }
 
 @Injectable({

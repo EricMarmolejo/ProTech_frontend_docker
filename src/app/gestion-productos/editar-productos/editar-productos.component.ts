@@ -123,9 +123,10 @@ export class EditarProductosComponent implements OnInit {
     formData.append('categoria', productoData.categoria);
 
     if (productoData.caracteristicas) {
-      productoData.caracteristicas.forEach((c: string, i: number) => {
-        formData.append(`caracteristicas[${i}]`, c);
-      });
+      formData.append(
+        'caracteristicas',
+        JSON.stringify(productoData.caracteristicas)
+      );
     }
 
     if (this.imagen) {
