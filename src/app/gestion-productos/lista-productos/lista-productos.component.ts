@@ -6,17 +6,17 @@ import {
   Categoria,
 } from '../../shared/services/productos.service';
 
-import { StockService } from '../../shared/services/stock.service'; // ajusta el path si es diferente
-
+import { StockService } from '../../shared/services/stock.service';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { lastValueFrom } from 'rxjs';
 import { PaginadorComponent } from '../../paginador/paginador.component';
+import { ReutilizableService } from '../../shared/services/reutilizable.service'; // <-- NUEVO
 
 @Component({
   selector: 'app-lista-productos',
   standalone: true,
-  imports: [CommonModule, FormsModule,PaginadorComponent],
+  imports: [CommonModule, FormsModule, PaginadorComponent],
   templateUrl: './lista-productos.component.html',
   styleUrls: ['./lista-productos.component.css'],
 })
@@ -38,7 +38,8 @@ export class ListaProductosComponent implements OnInit {
   constructor(
     private productoService: ProductoService,
     private router: Router,
-    private stockservice: StockService
+    private stockservice: StockService,
+    private reutilizableService: ReutilizableService // <-- NUEVO
   ) {}
 
   ngOnInit(): void {
@@ -115,7 +116,6 @@ export class ListaProductosComponent implements OnInit {
     return filtrados.slice(inicio, inicio + this.tamanioPagina);
   }
 
-  // Se recomienda resetear la página al cambiar filtros:
   onFiltroChange(): void {
     this.paginaActual = 1;
   }
@@ -125,21 +125,31 @@ export class ListaProductosComponent implements OnInit {
   }
 
   eliminarProducto(producto: Producto): void {
-    const confirmacion = confirm(
-      `¿Estás seguro de eliminar "${producto.nombre}"?`
-    );
-    if (!confirmacion) return;
+    this.reutilizableService
+      .confirmDialog(
+        '¿Eliminar producto?',
+        `¿Estás seguro de eliminar "${producto.nombre}"?`
+      )
+      .then((confirmado) => {
+        if (!confirmado) return;
 
-    const token = localStorage.getItem('token') || '';
-    this.productoService.eliminarProducto(producto._id!, token).subscribe({
-      next: () => {
-        this.productos = this.productos.filter((p) => p._id !== producto._id);
-      },
-      error: (err) => {
-        console.error('Error al eliminar producto:', err);
-        alert('No se pudo eliminar el producto.');
-      },
-    });
+        const token = localStorage.getItem('token') || '';
+        this.productoService.eliminarProducto(producto._id!, token).subscribe({
+          next: () => {
+            this.productos = this.productos.filter(
+              (p) => p._id !== producto._id
+            );
+            this.reutilizableService.success('Producto eliminado');
+          },
+          error: (err) => {
+            console.error('Error al eliminar producto:', err);
+            this.reutilizableService.error(
+              'No se pudo eliminar el producto',
+              'Ocurrió un error inesperado'
+            );
+          },
+        });
+      });
   }
 
   registrarEntrada(producto: Producto): void {

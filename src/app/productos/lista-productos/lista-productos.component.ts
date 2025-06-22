@@ -7,6 +7,7 @@ import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { CarritoService } from '../../shared/services/carrito.service';
 import { PaginadorComponent } from '../../paginador/paginador.component';
+import { ReutilizableService } from '../../shared/services/reutilizable.service';
 
 @Component({
   selector: 'app-lista-productos-cliente',
@@ -29,11 +30,12 @@ export class ListaProductosComponent implements OnInit {
   paginaActual = 1;
   tamanioPagina = 3; // O cualquier número que desees por página
 
-  constructor(
+   constructor(
     private productoService: ProductoService,
     private stockService: StockService,
     private router: Router,
-    private carritoService: CarritoService // inyectar
+    private carritoService: CarritoService,
+    private reutilizableService: ReutilizableService // ⬅️ Inyectar servicio
   ) {}
 
   ngOnInit(): void {
@@ -134,18 +136,29 @@ export class ListaProductosComponent implements OnInit {
     this.router.navigate(['/dashboard/producto', id]);
   }
 
-  agregarAlCarrito(producto: any): void {
-    const productoCarrito: any = {
-      productoId: producto._id,
-      nombre: producto.nombre,
-      precio: producto.precio,
-      imagen: producto.imagen,
-      stock: producto.stock,
-    };
+agregarAlCarrito(producto: any): void {
+  const productoCarrito: any = {
+    productoId: producto._id,
+    nombre: producto.nombre,
+    precio: producto.precio,
+    imagen: producto.imagen,
+    stock: producto.stock,
+  };
 
-    this.carritoService.agregarProducto(productoCarrito);
-    alert(`"${producto.nombre}" se agregó al carrito.`);
-  }
+  this.carritoService.agregarProducto(productoCarrito);
+
+  this.reutilizableService.confirmDialogConDosOpciones(
+    `"${producto.nombre}" agregado al carrito`,
+    '¿Qué deseas hacer ahora?',
+    'Ir al carrito',
+    'Seguir comprando'
+  ).then((irAlCarrito) => {
+    if (irAlCarrito) {
+      this.router.navigate(['/dashboard/carrito']);
+    }
+  });
+}
+
   seleccionarCategoria(categoria: string): void {
     this.filtroCategoria = categoria;
     this.paginaActual = 1;

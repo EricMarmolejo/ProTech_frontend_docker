@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
 import { CarritoService } from '../shared/services/carrito.service';
+import { ReutilizableService } from '../shared/services/reutilizable.service'; // <-- NUEVO
 
 @Component({
   selector: 'app-inicio',
@@ -37,7 +38,8 @@ export class InicioComponent implements OnInit {
     private productoService: ProductoService,
     private stockService: StockService,
     private router: Router,
-    private carritoService: CarritoService // inyectar servicio
+    private carritoService: CarritoService,
+    private reutilizableService: ReutilizableService // <-- NUEVO
   ) {}
 
   ngOnInit(): void {
@@ -104,6 +106,7 @@ export class InicioComponent implements OnInit {
     const categoriasSet = new Set(this.productos.map((p) => p.categoriaNombre));
     this.categoriasDisponibles = Array.from(categoriasSet);
   }
+
   verDetalles(id: string): void {
     this.router.navigate(['/dashboard/producto', id]);
   }
@@ -118,8 +121,11 @@ export class InicioComponent implements OnInit {
     };
 
     this.carritoService.agregarProducto(productoCarrito);
-    alert(`"${producto.nombre}" se agregó al carrito.`);
+    this.reutilizableService.success(
+      `"${producto.nombre}" agregado al carrito`
+    );
   }
+
   obtenerProductosAleatorios(productos: any[], cantidad: number): any[] {
     const copia = [...productos];
     for (let i = copia.length - 1; i > 0; i--) {
@@ -128,6 +134,7 @@ export class InicioComponent implements OnInit {
     }
     return copia.slice(0, cantidad);
   }
+
   iniciarCarruselAuto(): void {
     this.intervalId = setInterval(() => {
       if (this.productosDestacados.length > 0) {
@@ -137,7 +144,7 @@ export class InicioComponent implements OnInit {
         this.currentIndex =
           this.currentIndex + 1 > maxIndex ? 0 : this.currentIndex + 1;
       }
-    }, 4000); // Cambia cada 4 segundos
+    }, 4000);
   }
 
   ngOnDestroy(): void {

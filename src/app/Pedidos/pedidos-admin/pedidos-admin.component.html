@@ -16,6 +16,8 @@
         <p><strong>Dirección:</strong> {{ pedido.direccion?.direccion || 'Sin dirección' }}</p>
         <p><strong>Total:</strong> ${{ pedido.total | number: '1.2-2' }}</p>
         <p><strong>Fecha:</strong> {{ pedido.fecha | date: 'short' }}</p>
+        <p><strong>Ciudad:</strong> {{pedido.direccion?.ciudad}} , {{pedido.direccion?.departamento}}</p>
+        <p><strong>Teléfono:</strong> {{ pedido.direccion?.telefono }}</p>
       </div>
 
       <div class="tarjeta-footer">

@@ -104,4 +104,10 @@ export class PerfilService {
       return null;
     }
   }
+getDepartamentosCiudades() {
+  return this.http.get<{ [key: string]: string[] }>(
+    'https://pro-tech-backend.vercel.app/api/direcciones/colombia/departamentos-ciudades'
+  );
+}
+
 }

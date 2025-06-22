@@ -5,14 +5,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import Swal from 'sweetalert2';
 import { Usuario } from '../shared/services/Usuarios.service';
-import { PaginadorComponent } from "../paginador/paginador.component";
+import { PaginadorComponent } from '../paginador/paginador.component';
 
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.component.html',
   styleUrls: ['./perfil.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, PaginadorComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule,
+    PaginadorComponent,
+  ],
 })
 export class PerfilComponent implements OnInit {
   perfil: Usuario | any = null;
@@ -27,13 +33,33 @@ export class PerfilComponent implements OnInit {
 
   direccionForm = this.getFormularioVacio();
   direccionEnEdicion: any = null;
+  departamentos: string[] = [];
+  ciudadesDisponibles: string[] = [];
+  departamentosCiudades: { [key: string]: string[] } = {};
 
   constructor(private perfilService: PerfilService) {}
 
-  ngOnInit(): void {
-    this.cargarPerfil();
-    this.cargarDirecciones();
-  }
+ ngOnInit(): void {
+  this.cargarPerfil();
+  this.cargarDirecciones();
+  this.cargarDepartamentosCiudades();
+}
+cargarDepartamentosCiudades(): void {
+  this.perfilService.getDepartamentosCiudades().subscribe({
+    next: (data) => {
+      this.departamentosCiudades = data;
+      this.departamentos = Object.keys(data).sort();
+    },
+    error: () =>
+      this.mostrarAlerta('error', 'Error al cargar departamentos y ciudades'),
+  });
+}
+onDepartamentoSeleccionado(): void {
+  const depto = this.direccionForm.departamento;
+  this.ciudadesDisponibles = this.departamentosCiudades[depto] || [];
+}
+
+
 
   private mostrarAlerta(
     icon: 'success' | 'error' | 'warning' | 'info',
@@ -197,10 +223,12 @@ export class PerfilComponent implements OnInit {
     }
   }
 
-  editarDireccion(dir: any): void {
-    this.direccionEnEdicion = { ...dir }; // Clonar objeto
-    this.direccionForm = { ...dir };
-  }
+editarDireccion(dir: any): void {
+  this.direccionEnEdicion = { ...dir };
+  this.direccionForm = { ...dir };
+  this.onDepartamentoSeleccionado(); 
+}
+
 
   actualizarDireccion(): void {
     this.perfilService

@@ -62,4 +62,28 @@ export class ReutilizableService {
       }
     }).then(result => result.isConfirmed);
   }
+  confirmDialogConDosOpciones(
+  title: string,
+  text: string,
+  confirmButtonText = 'Sí',
+  cancelButtonText = 'No'
+): Promise<boolean> {
+  return Swal.fire({
+    title,
+    text,
+    icon: 'success',
+    background: '#1a1d2e',
+    color: '#fff',
+    iconColor: '#4c7fdc',
+    showCancelButton: true,
+    confirmButtonText,
+    cancelButtonText,
+    confirmButtonColor: '#4c7fdc',
+    cancelButtonColor: '#7f8c8d',
+    customClass: {
+      popup: 'swal2-dark',
+    },
+  }).then((result) => result.isConfirmed);
+}
+
 }

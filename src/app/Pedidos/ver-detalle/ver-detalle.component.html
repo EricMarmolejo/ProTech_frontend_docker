@@ -28,6 +28,10 @@
       <span>{{ pedido.direccion?.direccion || 'No disponible' }}</span>
     </div>
     <div class="info-item">
+      <label>Ciudad:</label>
+      <span>{{pedido.direccion?.ciudad || 'No disponible'}} , {{pedido.direccion?.departamento || 'No disponible'}}</span>
+    </div>
+    <div class="info-item">
       <label>Total:</label>
       <span class="total">${{ pedido.total | number: '1.2-2' }}</span>
     </div>

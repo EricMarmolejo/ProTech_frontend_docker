@@ -3,8 +3,8 @@
 
   <section class="perfil-card" aria-label="Información del perfil">
     <div class="avatar-section">
-      <img [src]="perfil.avatarUrl ? perfil.avatarUrl : 'assets/default-avatar.png'"
-        alt="Avatar de usuario" class="avatar-img" />
+      <img [src]="perfil.avatarUrl ? perfil.avatarUrl : 'assets/default-avatar.png'" alt="Avatar de usuario"
+        class="avatar-img" />
       <label for="avatarInput" class="file-label" tabindex="0">
         Cambiar avatar
         <input id="avatarInput" type="file" (change)="onFileSelected($event)" accept="image/*" hidden />
@@ -49,6 +49,10 @@
         <div class="direccion-acciones">
           <button class="btn btn-outline-primary btn-sm" (click)="editarDireccion(dir)">Editar</button>
           <button class="btn btn-outline-danger btn-sm" (click)="eliminarDireccion(dir._id)">Eliminar</button>
+          <button class="btn btn-outline-warning btn-sm" *ngIf="!dir.esPrincipal"
+            (click)="marcarComoPrincipal(dir._id)">
+            Establecer como principal
+          </button>
         </div>
       </div>
 
@@ -62,7 +66,8 @@
     </ng-template>
 
 
-    <h4>Agregar nueva dirección</h4>
+    <h4>{{ direccionEnEdicion ? 'Editar dirección' : 'Agregar nueva dirección' }}</h4>
+
     <form #formDirec="ngForm" (ngSubmit)="agregarDireccion()" class="row g-3">
       <div class="col-12">
         <label for="nombreDestinatario" class="form-label">Nombre destinatario</label>
@@ -82,16 +87,29 @@
           required />
       </div>
 
-      <div class="col-12">
-        <label for="ciudad" class="form-label">Ciudad</label>
-        <input type="text" class="form-control" id="ciudad" name="ciudad" [(ngModel)]="direccionForm.ciudad" required />
-      </div>
-
+      <!-- DEPARTAMENTO -->
       <div class="col-12">
         <label for="departamento" class="form-label">Departamento</label>
-        <input type="text" class="form-control" id="departamento" name="departamento"
-          [(ngModel)]="direccionForm.departamento" required />
+        <select class="form-control" id="departamento" name="departamento" [(ngModel)]="direccionForm.departamento"
+          (change)="onDepartamentoSeleccionado()" required>
+          <option value="">Seleccione un departamento</option>
+          <option *ngFor="let depto of departamentos" [value]="depto">
+            {{ depto | titlecase }}
+          </option>
+        </select>
       </div>
+
+      <!-- CIUDAD -->
+      <div class="col-12">
+        <label for="ciudad" class="form-label">Ciudad</label>
+        <select class="form-control" id="ciudad" name="ciudad" [(ngModel)]="direccionForm.ciudad" required>
+          <option value="">Seleccione una ciudad</option>
+          <option *ngFor="let ciudad of ciudadesDisponibles" [value]="ciudad">
+            {{ ciudad | titlecase }}
+          </option>
+        </select>
+      </div>
+
 
       <!-- Nuevo campo código postal -->
       <div class="col-12">
@@ -107,11 +125,16 @@
       </div>
 
 
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary" [disabled]="formDirec.invalid">
-          Agregar dirección
+      <div class="col-12 btn-group-direccion">
+        <button type="submit" class="btn-direccion-accion" [disabled]="formDirec.invalid">
+          {{ direccionEnEdicion ? 'Actualizar dirección' : 'Agregar dirección' }}
+        </button>
+        <button type="button" class="btn-cancelar-direccion" *ngIf="direccionEnEdicion"
+          (click)="limpiarFormularioDireccion()">
+          Cancelar
         </button>
       </div>
+
     </form>
   </section>
   <br>

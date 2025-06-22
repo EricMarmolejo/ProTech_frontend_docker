@@ -17,6 +17,7 @@
             <input type="date" [(ngModel)]="fechaFin" name="fechaFin" />
         </label>
         <button type="submit" [disabled]="cargando">Filtrar</button>
+        <button (click)="volver()" class="btn-volver">⬅ Volver</button>
         <button type="button" (click)="limpiarFiltro()" [disabled]="cargando">Limpiar</button>
     </form>
 

@@ -13,11 +13,12 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PaginadorComponent } from '../../paginador/paginador.component';
 import { FormsModule } from '@angular/forms';
+import { ReutilizableService } from '../../shared/services/reutilizable.service';
 
 @Component({
   selector: 'app-resumen-orden',
   standalone: true,
-  imports: [CommonModule,PaginadorComponent, FormsModule],
+  imports: [CommonModule, PaginadorComponent, FormsModule],
   templateUrl: './resumen-orden.component.html',
   styleUrls: ['./resumen-orden.component.css'],
 })
@@ -34,27 +35,28 @@ export class ResumenOrdenComponent implements OnInit {
     private carritoService: CarritoService,
     private perfilService: PerfilService,
     private pedidoService: PedidoService,
-    private router: Router
+    private router: Router,
+    private reutilizableService: ReutilizableService
   ) {}
 
   ngOnInit(): void {
-  this.items = this.carritoService.obtenerCarritoActual();
-  this.total = this.items.reduce(
-    (acc, item) => acc + item.producto.precio * item.cantidad,
-    0
-  );
+    this.items = this.carritoService.obtenerCarritoActual();
+    this.total = this.items.reduce(
+      (acc, item) => acc + item.producto.precio * item.cantidad,
+      0
+    );
 
-  this.usuarioId = this.perfilService.getUserIdFromToken();
-  if (this.usuarioId) {
-    this.perfilService
-      .obtenerDireccionesPorUsuario(this.usuarioId)
-      .subscribe((direcciones) => {
-        this.direcciones = direcciones;
-        this.direccionSeleccionada =
-          direcciones.find((d: any) => d.esPrincipal) || direcciones[0];
-      });
+    this.usuarioId = this.perfilService.getUserIdFromToken();
+    if (this.usuarioId) {
+      this.perfilService
+        .obtenerDireccionesPorUsuario(this.usuarioId)
+        .subscribe((direcciones) => {
+          this.direcciones = direcciones;
+          this.direccionSeleccionada =
+            direcciones.find((d: any) => d.esPrincipal) || direcciones[0];
+        });
+    }
   }
-}
 
   volverAlCarrito(): void {
     this.router.navigate(['dashboard/carrito']);
@@ -62,17 +64,20 @@ export class ResumenOrdenComponent implements OnInit {
 
   confirmarCompra(): void {
     if (!this.usuarioId) {
-      alert('Usuario no identificado. Por favor, inicia sesión.');
-      this.router.navigate(['/login']);
+      this.reutilizableService
+        .error('Usuario no identificado', 'Por favor, inicia sesión.')
+        .then(() => this.router.navigate(['/login']));
       return;
     }
 
     if (!this.direccionSeleccionada) {
-      alert('Por favor selecciona una dirección de envío.');
+      this.reutilizableService.warning(
+        'Dirección no seleccionada',
+        'Por favor selecciona una dirección de envío.'
+      );
       return;
     }
 
-    // Mapear productos usando el ID correcto: producto.productoId
     const productos: PedidoItem[] = this.items.map((item) => ({
       producto: item.producto.productoId,
       cantidad: item.cantidad,
@@ -88,13 +93,19 @@ export class ResumenOrdenComponent implements OnInit {
 
     this.pedidoService.crearPedido(pedidoData).subscribe({
       next: () => {
-        alert('¡Compra confirmada! Gracias por tu pedido.');
-        this.carritoService.limpiarCarrito();
-        this.router.navigate(['dashboard/inicio']);
+        this.reutilizableService
+          .success('¡Compra confirmada!', 'Gracias por tu pedido.')
+          .then(() => {
+            this.carritoService.limpiarCarrito();
+            this.router.navigate(['dashboard/inicio']);
+          });
       },
       error: (err) => {
         console.error('Error al crear pedido:', err);
-        alert('Ocurrió un error al procesar tu pedido. Intenta nuevamente.');
+        this.reutilizableService.error(
+          'Error al procesar el pedido',
+          'Intenta nuevamente más tarde.'
+        );
       },
     });
   }

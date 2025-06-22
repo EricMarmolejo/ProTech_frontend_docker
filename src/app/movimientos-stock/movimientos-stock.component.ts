@@ -2,20 +2,21 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { StockService } from '../shared/services/stock.service';
 import { CommonModule } from '@angular/common';
+import { Location } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import Chart from 'chart.js/auto';
-import { PaginadorComponent } from "../paginador/paginador.component";
+import { PaginadorComponent } from '../paginador/paginador.component';
 
 @Component({
   selector: 'app-movimientos-stock',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, PaginadorComponent],
   templateUrl: './movimientos-stock.component.html',
-  styleUrls: ['./movimientos-stock.component.css']
+  styleUrls: ['./movimientos-stock.component.css'],
 })
 export class MovimientosStockComponent implements OnInit, OnDestroy {
   productoId!: string;
@@ -29,15 +30,15 @@ export class MovimientosStockComponent implements OnInit, OnDestroy {
 
   chart: Chart | null = null;
   errorFecha: string = '';
-  pageSize = 5;       // cantidad de filas por página
+  pageSize = 5; // cantidad de filas por página
   currentPage = 1;
   movimientosPaginados: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
-    private stockService: StockService
+    private stockService: StockService,
+    private location: Location 
   ) {}
-
 
   ngOnInit(): void {
     this.productoId = this.route.snapshot.paramMap.get('idProducto')!;
@@ -45,12 +46,12 @@ export class MovimientosStockComponent implements OnInit, OnDestroy {
     this.cargarStockActual();
   }
 
-actualizarPagina(page: number) {
-  this.currentPage = page;
-  const start = (page - 1) * this.pageSize;
-  const end = start + this.pageSize;
-  this.movimientosPaginados = this.movimientos.slice(start, end);
-}
+  actualizarPagina(page: number) {
+    this.currentPage = page;
+    const start = (page - 1) * this.pageSize;
+    const end = start + this.pageSize;
+    this.movimientosPaginados = this.movimientos.slice(start, end);
+  }
 
   ngOnDestroy() {
     if (this.chart) {
@@ -58,10 +59,9 @@ actualizarPagina(page: number) {
     }
   }
 
- cargarMovimientos(): void {
-  this.cargando = true;
-  this.stockService.obtenerMovimientosPorProducto(this.productoId)
-    .subscribe({
+  cargarMovimientos(): void {
+    this.cargando = true;
+    this.stockService.obtenerMovimientosPorProducto(this.productoId).subscribe({
       next: (resp: any) => {
         this.movimientos = resp;
         this.movimientosOriginal = [...resp];
@@ -72,21 +72,19 @@ actualizarPagina(page: number) {
       error: (err) => {
         console.error('Error al obtener movimientos', err);
         this.cargando = false;
-      }
+      },
     });
-}
-
+  }
 
   cargarStockActual(): void {
-    this.stockService.obtenerStockActual(this.productoId)
-      .subscribe({
-        next: (resp: any) => {
-          this.stockActual = resp.stock;
-        },
-        error: (err) => {
-          console.error('Error al obtener stock actual', err);
-        }
-      });
+    this.stockService.obtenerStockActual(this.productoId).subscribe({
+      next: (resp: any) => {
+        this.stockActual = resp.stock;
+      },
+      error: (err) => {
+        console.error('Error al obtener stock actual', err);
+      },
+    });
   }
 
   filtrarPorFechas(): void {
@@ -97,7 +95,8 @@ actualizarPagina(page: number) {
     }
 
     if (this.fechaInicio > this.fechaFin) {
-      this.errorFecha = 'La fecha "Desde" no puede ser mayor que la fecha "Hasta".';
+      this.errorFecha =
+        'La fecha "Desde" no puede ser mayor que la fecha "Hasta".';
       return;
     }
 
@@ -109,45 +108,51 @@ actualizarPagina(page: number) {
       const fecha = new Date(mov.fecha);
       return fecha >= desde && fecha <= hasta;
     });
-   this.currentPage = 1;
-  this.actualizarPagina(this.currentPage);
-  this.crearGrafico();;
+    this.currentPage = 1;
+    this.actualizarPagina(this.currentPage);
+    this.crearGrafico();
   }
 
- limpiarFiltro(): void {
-  this.fechaInicio = '';
-  this.fechaFin = '';
-  this.movimientos = [...this.movimientosOriginal];
-  this.currentPage = 1;
-  this.actualizarPagina(this.currentPage);
-  this.crearGrafico();
-}
+  limpiarFiltro(): void {
+    this.fechaInicio = '';
+    this.fechaFin = '';
+    this.movimientos = [...this.movimientosOriginal];
+    this.currentPage = 1;
+    this.actualizarPagina(this.currentPage);
+    this.crearGrafico();
+  }
 
   crearGrafico(): void {
-    if(this.chart) {
+    if (this.chart) {
       this.chart.destroy(); // destruye si ya hay gráfico
     }
 
     // Ejemplo: mostrar cantidad por fecha (puedes adaptar)
-    const etiquetas = this.movimientos.map(mov => new Date(mov.fecha).toLocaleDateString());
-    const cantidades = this.movimientos.map(mov => mov.cantidad);
+    const etiquetas = this.movimientos.map((mov) =>
+      new Date(mov.fecha).toLocaleDateString()
+    );
+    const cantidades = this.movimientos.map((mov) => mov.cantidad);
 
-    const ctx = (document.getElementById('graficoStock') as HTMLCanvasElement).getContext('2d');
+    const ctx = (
+      document.getElementById('graficoStock') as HTMLCanvasElement
+    ).getContext('2d');
     if (!ctx) return;
 
     this.chart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: etiquetas,
-        datasets: [{
-          label: 'Cantidad Movimientos',
-          data: cantidades,
-          borderColor: 'rgba(33, 150, 243, 1)',
-          backgroundColor: 'rgba(33, 150, 243, 0.2)',
-          fill: true,
-          tension: 0.3,
-          pointRadius: 5,
-        }]
+        datasets: [
+          {
+            label: 'Cantidad Movimientos',
+            data: cantidades,
+            borderColor: 'rgba(33, 150, 243, 1)',
+            backgroundColor: 'rgba(33, 150, 243, 0.2)',
+            fill: true,
+            tension: 0.3,
+            pointRadius: 5,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -156,52 +161,84 @@ actualizarPagina(page: number) {
             display: true,
             title: {
               display: true,
-              text: 'Fecha'
-            }
+              text: 'Fecha',
+            },
           },
           y: {
             display: true,
             title: {
               display: true,
-              text: 'Cantidad'
+              text: 'Cantidad',
             },
-            beginAtZero: true
-          }
-        }
-      }
+            beginAtZero: true,
+          },
+        },
+      },
     });
   }
 
+  private formatearDatosMovimientos(): any[][] {
+    return this.movimientos.map((mov) => [
+      new Date(mov.fecha).toLocaleString('es-CO'),
+      mov.producto?.nombre || 'Producto desconocido',
+      mov.tipo,
+      mov.cantidad,
+      mov.observacion || '-',
+    ]);
+  }
+
+  private obtenerNombreProducto(): string {
+    const nombre = this.movimientos[0]?.producto?.nombre || 'producto';
+    return nombre.replace(/\s+/g, '_').toLowerCase();
+  }
+
   exportarExcel(): void {
-    const ws = XLSX.utils.json_to_sheet(this.movimientos.map(mov => ({
-      Fecha: new Date(mov.fecha).toLocaleString(),
-      Tipo: mov.tipo,
-      Cantidad: mov.cantidad,
-      Observación: mov.observacion || '-'
-    })));
+    const datos = this.formatearDatosMovimientos();
+    const encabezados = [
+      'Fecha',
+      'Producto',
+      'Tipo',
+      'Cantidad',
+      'Observación',
+    ];
+
+    const ws = XLSX.utils.aoa_to_sheet([encabezados, ...datos]);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Movimientos');
 
-    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const nombreArchivo = `movimientos_${this.obtenerNombreProducto()}.xlsx`;
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-    FileSaver.saveAs(blob, 'movimientos_stock.xlsx');
+    FileSaver.saveAs(blob, nombreArchivo);
   }
 
   exportarPDF(): void {
     const doc = new jsPDF();
-    doc.setTextColor(20, 20, 20);
-    doc.text('Movimientos de Stock', 14, 10);
+    doc.setTextColor(20);
+    doc.setFontSize(14);
+    doc.text(
+      `Movimientos de Stock - ${this.obtenerNombreProducto().replace(
+        /_/g,
+        ' '
+      )}`,
+      14,
+      12
+    );
+
     autoTable(doc, {
-      head: [['Fecha', 'Tipo', 'Cantidad', 'Observación']],
-      body: this.movimientos.map((mov) => [
-        new Date(mov.fecha).toLocaleString(),
-        mov.tipo,
-        mov.cantidad,
-        mov.observacion || '-',
-      ]),
+      startY: 18,
+      head: [['Fecha', 'Producto', 'Tipo', 'Cantidad', 'Observación']],
+      body: this.formatearDatosMovimientos(),
       headStyles: { fillColor: [33, 150, 243] },
-      styles: { fontSize: 9 }
+      styles: { fontSize: 9, cellPadding: 2 },
+      alternateRowStyles: { fillColor: [245, 245, 245] },
     });
-    doc.save('movimientos_stock.pdf');
+
+    const nombreArchivo = `movimientos_${this.obtenerNombreProducto()}.pdf`;
+    doc.save(nombreArchivo);
   }
+    volver(): void {
+    this.location.back(); 
+  }
+
 }

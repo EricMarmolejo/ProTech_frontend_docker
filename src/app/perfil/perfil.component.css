@@ -550,3 +550,74 @@ form.row.g-3 input:focus {
   opacity: 0.6;
   cursor: not-allowed;
 }
+.direccion-section select.form-control {
+  background-color: #1e1e2f;
+  border: 1px solid #444;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  width: 100%;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.direccion-section select.form-control:focus {
+  border-color: #00bfff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 191, 255, 0.3);
+}
+.btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+.btn-group-direccion {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  justify-content: flex-start;
+}
+
+.btn-direccion-accion {
+  background-color: #00bfff;
+  color: #0e0e1a;
+  font-weight: bold;
+  border: none;
+  padding: 0.65rem 1.4rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 191, 255, 0.4);
+}
+
+.btn-direccion-accion:hover:not(:disabled) {
+  background-color: #009ccc;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 191, 255, 0.6);
+}
+
+.btn-direccion-accion:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-cancelar-direccion {
+  background-color: #6c757d;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  padding: 0.65rem 1.4rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+}
+
+.btn-cancelar-direccion:hover {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(108, 117, 125, 0.5);
+}
+
+

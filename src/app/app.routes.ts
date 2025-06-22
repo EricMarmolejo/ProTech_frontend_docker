@@ -8,7 +8,7 @@ import { UsuariosComponent } from './usuarios/usuarios.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { SoporteComponent } from './soporte/soporte.component';
-import { AuthGuard } from './shared/guards/auth.guard'; // si tienes uno
+import { AuthGuard } from './shared/guards/auth.guard';
 import { GestionProductosComponent } from './gestion-productos/gestion-productos.component';
 import { CategoriasComponent } from './categorias/categorias.component';
 import { EditarProductosComponent } from './gestion-productos/editar-productos/editar-productos.component';
@@ -22,6 +22,13 @@ import { VerDetalleComponent } from './Pedidos/ver-detalle/ver-detalle.component
 import { EditarCategoriaComponent } from './categorias/editar-categoria/editar-categoria.component';
 
 export const routes: Routes = [
+  // Ruta por defecto
+  {
+    path: '',
+    redirectTo: '/login',
+    pathMatch: 'full',
+  },
+
   // Rutas públicas
   {
     path: 'login',
@@ -34,75 +41,85 @@ export const routes: Routes = [
     component: RegisterComponent,
   },
 
-  // Rutas protegidas dentro del dashboard
+  // Rutas protegidas
   {
     path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [AuthGuard], // opcional si tienes autenticación
+    canActivate: [AuthGuard],
     children: [
-      {
-        path: 'inicio',
-        component: InicioComponent,
-        title: 'Inicio',
-      },
+      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
+      { path: 'inicio', component: InicioComponent, title: 'Inicio' },
       {
         path: 'usuarios',
         component: UsuariosComponent,
         title: 'Usuarios',
+        data: { roles: ['admin'] },
       },
       {
         path: 'lista_productos',
         component: ListaProductosComponent,
         title: 'Productos',
+        data: { roles: ['cliente', 'admin'] },
       },
       {
         path: 'reportes',
         component: ReportesComponent,
         title: 'Reportes',
+        data: { roles: ['admin'] },
       },
       {
         path: 'perfil',
         component: PerfilComponent,
         title: 'Perfil',
+        data: { roles: ['cliente', 'admin'] },
       },
       {
         path: 'soporte',
         component: SoporteComponent,
         title: 'Soporte',
+        data: { roles: ['cliente', 'admin'] },
       },
       {
         path: 'productos',
         component: GestionProductosComponent,
-        title: 'Gestion de productos',
+        title: 'Gestión de productos',
+        data: { roles: ['admin'] },
       },
       {
         path: 'producto/:id',
         component: DetalleProductoComponent,
+        title: 'Detalle de producto',
+        data: { roles: ['cliente', 'admin'] },
       },
       {
         path: 'carrito',
         component: CarritoComponent,
         title: 'Carrito de compras',
+        data: { roles: ['cliente'] },
       },
       {
         path: 'resumen-orden',
         component: ResumenOrdenComponent,
         title: 'Resumen de la orden',
+        data: { roles: ['cliente'] },
       },
       {
         path: 'Mis_pedidos',
         component: PedidosClientesComponent,
         title: 'Mis pedidos',
+        data: { roles: ['cliente'] },
       },
       {
         path: 'Pedidos',
         component: PedidosAdminComponent,
         title: 'Pedidos',
+        data: { roles: ['admin'] },
       },
       {
         path: 'Pedidos/:id',
         component: VerDetalleComponent,
         title: 'Detalle pedido',
+        data: { roles: ['admin', 'cliente'] },
       },
       {
         path: 'stock/:idProducto/:tipo',
@@ -111,6 +128,7 @@ export const routes: Routes = [
             (m) => m.FormularioStockComponent
           ),
         title: 'Registrar movimiento de stock',
+        data: { roles: ['admin'] },
       },
       {
         path: 'stock/:idProducto',
@@ -119,44 +137,33 @@ export const routes: Routes = [
             (m) => m.MovimientosStockComponent
           ),
         title: 'Ver movimientos de stock',
+        data: { roles: ['admin'] },
       },
       {
         path: 'categorias',
         component: CategoriasComponent,
-        title: 'Gestion de categorias',
+        title: 'Gestión de categorías',
+        data: { roles: ['admin'] },
       },
       {
         path: 'categoria/editar/:id',
-        component:EditarCategoriaComponent,
-        title: 'Editar categoria',
+        component: EditarCategoriaComponent,
+        title: 'Editar categoría',
+        data: { roles: ['admin'] },
       },
       {
         path: 'productos/editar/:id',
-        component: EditarProductosComponent, // o un componente separado si prefieres
+        component: EditarProductosComponent,
         title: 'Editar producto',
-      },
-      {
-        path: '',
-        pathMatch: 'full',
-        redirectTo: 'login',
+        data: { roles: ['admin'] },
       },
     ],
   },
-  {
-    path: '',
-    redirectTo: '/login',
-    pathMatch: 'full',
-  },
 
-  // Ruta para 404
+  // Ruta para 404 (debe ir al final)
   {
     path: '**',
     title: '404',
     component: NotFoundComponent,
-  },
-  {
-    path: '',
-    redirectTo: '/login',
-    pathMatch: 'full',
   },
 ];

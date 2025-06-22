@@ -22,6 +22,7 @@
 
   <button 
     class="btn-agregar"
+    (click)="agregarAlCarrito(producto)"
     [disabled]="producto.stock === 0"
     [ngClass]="{'cursor-not-allowed opacity-50': producto.stock === 0}">
     Agregar al carrito

@@ -35,19 +35,16 @@
             </tr>
         </tbody>
     </table>
-    <app-paginador
-  [totalItems]="items.length"
-  [pageSize]="tamanioPagina"
-  [currentPage]="paginaActual"
-  (pageChange)="paginaActual = $event">
-</app-paginador>
+    <app-paginador [totalItems]="items.length" [pageSize]="tamanioPagina" [currentPage]="paginaActual"
+        (pageChange)="paginaActual = $event">
+    </app-paginador>
 
 
     <div class="acciones-carrito">
         <h3>Total: {{ total | currency }}</h3>
         <div class="botones-acciones">
             <button class="btn-vaciar" (click)="vaciar()">Vaciar carrito</button>
-            <button class="btn-secundario" routerLink="dashboard/productos">Seguir comprando</button>
+            <button class="btn-secundario" (click)="router.navigate(['/dashboard/lista_productos'])">Seguir comprando</button>
             <button class="btn-principal" (click)="irAResumen()">Finalizar compra</button>
         </div>
     </div>
