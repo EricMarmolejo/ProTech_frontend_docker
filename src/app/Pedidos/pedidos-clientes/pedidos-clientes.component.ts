@@ -51,24 +51,40 @@ export class PedidosClientesComponent implements OnInit {
     this.router.navigate(['dashboard/Pedidos', pedido._id]);
   }
 
-  async cancelarPedido(pedido: any): Promise<void> {
-    const confirmado = await this.reusable.confirmDialog(
-      'Cancelar pedido',
-      '¿Seguro que deseas cancelar este pedido?'
-    );
-    if (!confirmado) return;
+async cancelarPedido(pedido: any): Promise<void> {
+  const confirmado = await this.reusable.confirmDialog(
+    'Cancelar pedido',
+    '¿Seguro que deseas cancelar este pedido?'
+  );
 
-    this.pedidoService.actualizarEstadoPedido(pedido._id, 'cancelado').subscribe({
-      next: (pedidoActualizado) => {
-        pedido.estado = pedidoActualizado.estado;
-        this.reusable.success('Pedido cancelado', 'El pedido fue cancelado con éxito.');
-      },
-      error: (err) => {
-        console.error('Error al cancelar:', err);
-        this.reusable.error('Error', 'No se pudo cancelar el pedido.');
-      },
-    });
-  }
+  if (!confirmado) return;
+
+  this.pedidoService.cancelarPedido(
+    pedido._id
+  ).subscribe({
+    next: (response) => {
+      pedido.estado =
+        response.pedido.estado;
+
+      this.reusable.success(
+        'Pedido cancelado',
+        'El pedido fue cancelado con éxito.'
+      );
+    },
+    error: (err) => {
+      console.error(
+        'Error al cancelar:',
+        err
+      );
+
+      this.reusable.error(
+        'Error',
+        err?.error?.error ||
+        'No se pudo cancelar el pedido.'
+      );
+    },
+  });
+}
 
   async confirmarEntrega(pedido: any): Promise<void> {
     const confirmado = await this.reusable.confirmDialog(

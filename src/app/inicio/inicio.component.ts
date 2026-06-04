@@ -54,53 +54,88 @@ export class InicioComponent implements OnInit {
     return this.rol === 'admin';
   }
 
-  cargarProductos(): void {
-    this.cargando = true;
-    this.productoService.getProductos().subscribe({
-      next: (data) => {
-        const promesas = data.map(async (producto: any) => {
-          const categoriaNombre = producto.categoria?.nombre || 'Sin categoría';
+  async cargarProductos(): Promise<void> {
+  this.cargando = true;
+  this.error = '';
 
-          try {
-            const stock: any = await lastValueFrom(
-              this.stockService.obtenerStockActual(producto._id)
-            );
+  try {
+    const response: any = await lastValueFrom(
+      this.productoService.getProductos()
+    );
 
-            return {
-              ...producto,
-              categoriaNombre,
-              stock: stock?.stock ?? 0,
-            };
-          } catch (error) {
-            console.error(
-              `Error al obtener stock para ${producto.nombre}:`,
-              error
-            );
-            return {
-              ...producto,
-              categoriaNombre,
-              stock: 0,
-            };
-          }
-        });
+    console.log('Respuesta productos:', response);
 
-        Promise.all(promesas).then((productosConStock) => {
-          this.productos = productosConStock;
-          this.productosDestacados = this.obtenerProductosAleatorios(
-            productosConStock,
-            6
+    const productos = Array.isArray(response)
+      ? response
+      : response.data || response.productos || [];
+
+    if (!Array.isArray(productos)) {
+      throw new Error(
+        'La respuesta del servidor no contiene un arreglo de productos'
+      );
+    }
+
+    this.productos = await Promise.all(
+      productos.map(async (producto: any) => {
+        try {
+          const stock: any = await lastValueFrom(
+            this.stockService.obtenerStockActual(
+              producto._id
+            )
           );
-          this.extraerCategoriasDisponibles();
-          this.cargando = false;
-        });
-      },
-      error: (err) => {
-        console.error('Error al cargar productos:', err);
-        this.error = 'No se pudo cargar la lista de productos.';
-        this.cargando = false;
-      },
-    });
+
+          return {
+            ...producto,
+            categoriaNombre:
+              producto.categoria?.nombre ||
+              'Sin categoría',
+            stock:
+              stock?.stock ??
+              stock?.data?.stock ??
+              0,
+          };
+        } catch (error) {
+          console.error(
+            `Error al obtener stock para ${producto.nombre}:`,
+            error
+          );
+
+          return {
+            ...producto,
+            categoriaNombre:
+              producto.categoria?.nombre ||
+              'Sin categoría',
+            stock: 0,
+          };
+        }
+      })
+    );
+
+    this.extraerCategoriasDisponibles();
+
+    // Productos destacados para el carrusel
+    this.productosDestacados =
+      this.obtenerProductosAleatorios(
+        this.productos,
+        Math.min(8, this.productos.length)
+      );
+
+    this.currentIndex = 0;
+  } catch (error) {
+    console.error(
+      'Error al cargar productos:',
+      error
+    );
+
+    this.error =
+      'No se pudo cargar la lista de productos.';
+
+    this.productos = [];
+    this.productosDestacados = [];
+  } finally {
+    this.cargando = false;
   }
+}
 
   extraerCategoriasDisponibles(): void {
     const categoriasSet = new Set(this.productos.map((p) => p.categoriaNombre));
@@ -112,20 +147,33 @@ export class InicioComponent implements OnInit {
   }
 
   agregarAlCarrito(producto: any): void {
-    const productoCarrito: any = {
-      productoId: producto._id,
-      nombre: producto.nombre,
-      precio: producto.precio,
-      imagen: producto.imagen,
-      stock: producto.stock,
-    };
-
-    this.carritoService.agregarProducto(productoCarrito);
-    this.reutilizableService.success(
-      `"${producto.nombre}" agregado al carrito`
-    );
+  if (!producto) {
+    return;
   }
 
+  if (producto.stock <= 0) {
+    this.reutilizableService.warning(
+      'Sin stock',
+      'Este producto no tiene unidades disponibles.'
+    );
+    return;
+  }
+
+  const productoCarrito = {
+    productoId: producto._id,
+    nombre: producto.nombre,
+    precio: producto.precio,
+    imagen: producto.imagen,
+    stock: producto.stock,
+  };
+
+  this.carritoService.agregarProducto(productoCarrito);
+
+  this.reutilizableService.success(
+    'Producto agregado',
+    `"${producto.nombre}" fue agregado al carrito.`
+  );
+}
   obtenerProductosAleatorios(productos: any[], cantidad: number): any[] {
     const copia = [...productos];
     for (let i = copia.length - 1; i > 0; i--) {

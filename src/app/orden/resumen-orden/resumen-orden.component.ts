@@ -29,7 +29,7 @@ export class ResumenOrdenComponent implements OnInit {
   usuarioId: string | null = null;
   paginaActual = 1;
   tamanioPagina = 2;
-  direcciones: any[] = []; // Guardar todas las direcciones
+  direcciones: any[] = [];
 
   constructor(
     private carritoService: CarritoService,
@@ -41,19 +41,37 @@ export class ResumenOrdenComponent implements OnInit {
 
   ngOnInit(): void {
     this.items = this.carritoService.obtenerCarritoActual();
+
     this.total = this.items.reduce(
       (acc, item) => acc + item.producto.precio * item.cantidad,
       0
     );
 
     this.usuarioId = this.perfilService.getUserIdFromToken();
+
     if (this.usuarioId) {
       this.perfilService
         .obtenerDireccionesPorUsuario(this.usuarioId)
-        .subscribe((direcciones) => {
-          this.direcciones = direcciones;
-          this.direccionSeleccionada =
-            direcciones.find((d: any) => d.esPrincipal) || direcciones[0];
+        .subscribe({
+          next: (direcciones) => {
+            this.direcciones = direcciones;
+
+            this.direccionSeleccionada =
+              direcciones.find((d: any) => d.esPrincipal) ||
+              direcciones[0] ||
+              null;
+          },
+          error: (error) => {
+            console.error(
+              'Error al obtener direcciones:',
+              error
+            );
+
+            this.reutilizableService.error(
+              'Error',
+              'No se pudieron cargar las direcciones.'
+            );
+          },
         });
     }
   }
@@ -65,8 +83,20 @@ export class ResumenOrdenComponent implements OnInit {
   confirmarCompra(): void {
     if (!this.usuarioId) {
       this.reutilizableService
-        .error('Usuario no identificado', 'Por favor, inicia sesión.')
+        .error(
+          'Usuario no identificado',
+          'Por favor, inicia sesión.'
+        )
         .then(() => this.router.navigate(['/login']));
+
+      return;
+    }
+
+    if (!this.items.length) {
+      this.reutilizableService.warning(
+        'Carrito vacío',
+        'No hay productos para procesar.'
+      );
       return;
     }
 
@@ -78,40 +108,55 @@ export class ResumenOrdenComponent implements OnInit {
       return;
     }
 
-    const productos: PedidoItem[] = this.items.map((item) => ({
-      producto: item.producto.productoId,
-      cantidad: item.cantidad,
-    }));
+    const productos: PedidoItem[] = this.items.map(
+      (item) => ({
+        producto: item.producto.productoId,
+        cantidad: item.cantidad,
+      })
+    );
 
     const pedidoData: CrearPedidoDTO = {
       usuario: this.usuarioId,
       direccion:
-        this.direccionSeleccionada._id || this.direccionSeleccionada.id,
+        this.direccionSeleccionada._id ||
+        this.direccionSeleccionada.id,
       productos,
-      total: this.total,
     };
 
     this.pedidoService.crearPedido(pedidoData).subscribe({
       next: () => {
         this.reutilizableService
-          .success('¡Compra confirmada!', 'Gracias por tu pedido.')
+          .success(
+            '¡Compra confirmada!',
+            'Gracias por tu pedido.'
+          )
           .then(() => {
             this.carritoService.limpiarCarrito();
             this.router.navigate(['dashboard/inicio']);
           });
       },
+
       error: (err) => {
-        console.error('Error al crear pedido:', err);
+        console.error(
+          'Error al crear pedido:',
+          err
+        );
+
         this.reutilizableService.error(
           'Error al procesar el pedido',
-          'Intenta nuevamente más tarde.'
+          err?.error?.error ||
+            'Intenta nuevamente más tarde.'
         );
       },
     });
   }
+
   itemsPaginados(): ItemCarrito[] {
-    const inicio = (this.paginaActual - 1) * this.tamanioPagina;
+    const inicio =
+      (this.paginaActual - 1) * this.tamanioPagina;
+
     const fin = inicio + this.tamanioPagina;
+
     return this.items.slice(inicio, fin);
   }
 }

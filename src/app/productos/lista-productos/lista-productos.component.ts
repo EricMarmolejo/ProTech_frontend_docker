@@ -42,49 +42,64 @@ export class ListaProductosComponent implements OnInit {
     this.cargarProductos();
   }
 
-  cargarProductos(): void {
-    this.cargando = true;
-    this.productoService.getProductos().subscribe({
-      next: (data) => {
-        const promesas = data.map(async (producto: any) => {
-          const categoriaNombre = producto.categoria?.nombre || 'Sin categoría';
+ async cargarProductos(): Promise<void> {
+  this.cargando = true;
+  this.error = '';
 
-          try {
-            const stock: any = await lastValueFrom(
-              this.stockService.obtenerStockActual(producto._id)
-            );
+  try {
+    const response: any = await lastValueFrom(
+      this.productoService.getProductos()
+    );
 
-            return {
-              ...producto,
-              categoriaNombre,
-              stock: stock?.stock ?? 0,
-            };
-          } catch (error) {
-            console.error(
-              `Error al obtener stock para ${producto.nombre}:`,
-              error
-            );
-            return {
-              ...producto,
-              categoriaNombre,
-              stock: 0,
-            };
-          }
-        });
+    console.log('Respuesta productos:', response);
 
-        Promise.all(promesas).then((productosConStock) => {
-          this.productos = productosConStock;
-          this.extraerCategoriasDisponibles();
-          this.cargando = false;
-        });
-      },
-      error: (err) => {
-        console.error('Error al cargar productos:', err);
-        this.error = 'No se pudo cargar la lista de productos.';
-        this.cargando = false;
-      },
-    });
+    const productos = Array.isArray(response)
+      ? response
+      : response.data || response.productos || [];
+
+    if (!Array.isArray(productos)) {
+      throw new Error('La respuesta del servidor no contiene un arreglo de productos');
+    }
+
+    this.productos = await Promise.all(
+      productos.map(async (producto: any) => {
+        try {
+          const stock: any = await lastValueFrom(
+            this.stockService.obtenerStockActual(producto._id)
+          );
+
+          return {
+            ...producto,
+            categoriaNombre:
+              producto.categoria?.nombre || 'Sin categoría',
+            stock: stock?.stock ?? 0,
+          };
+        } catch (error) {
+          console.error(
+            `Error al obtener stock para ${producto.nombre}:`,
+            error
+          );
+
+          return {
+            ...producto,
+            categoriaNombre:
+              producto.categoria?.nombre || 'Sin categoría',
+            stock: 0,
+          };
+        }
+      })
+    );
+
+    this.extraerCategoriasDisponibles();
+  } catch (error) {
+    console.error('Error al cargar productos:', error);
+
+    this.error = 'No se pudo cargar la lista de productos.';
+    this.productos = [];
+  } finally {
+    this.cargando = false;
   }
+}
 
   extraerCategoriasDisponibles(): void {
     const mapa = new Map<string, string>(); // nombre => imagen
@@ -109,20 +124,32 @@ export class ListaProductosComponent implements OnInit {
     return filtrados.slice(inicio, fin);
   }
 
-  productosFiltradosSinPaginar(): any[] {
-    const min = this.precioMin ? Number(this.precioMin) : null;
-    const max = this.precioMax ? Number(this.precioMax) : null;
+productosFiltradosSinPaginar(): any[] {
+  const min = this.precioMin ? Number(this.precioMin) : null;
+  const max = this.precioMax ? Number(this.precioMax) : null;
 
-    return this.productos.filter(
-      (p) =>
-        (!this.filtroCategoria || p.categoriaNombre === this.filtroCategoria) &&
-        (!this.busqueda ||
-          p.nombre.toLowerCase().includes(this.busqueda.toLowerCase()) ||
-          p.descripcion.toLowerCase().includes(this.busqueda.toLowerCase())) &&
-        (min === null || p.precio >= min) &&
-        (max === null || p.precio <= max)
+  const textoBusqueda = this.busqueda
+    .trim()
+    .toLowerCase();
+
+  return this.productos.filter((p) => {
+    const descripcion =
+      (p.descripcion || '').toLowerCase();
+
+    const nombre =
+      (p.nombre || '').toLowerCase();
+
+    return (
+      (!this.filtroCategoria ||
+        p.categoriaNombre === this.filtroCategoria) &&
+      (!textoBusqueda ||
+        nombre.includes(textoBusqueda) ||
+        descripcion.includes(textoBusqueda)) &&
+      (min === null || p.precio >= min) &&
+      (max === null || p.precio <= max)
     );
-  }
+  });
+}
 
   limpiarFiltros(): void {
     this.busqueda = '';
