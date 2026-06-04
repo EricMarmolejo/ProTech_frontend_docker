@@ -100,32 +100,72 @@ export class ReportesComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   cargarDatos(): void {
-    this.reportesService.obtenerPedidos().subscribe((p) => {
-      this.pedidos = p;
-      this.totalPedidos = p.length;
-      this.totalVentas = p.reduce(
-        (acc: number, pedido: any) => acc + pedido.total,
-        0
-      );
+  this.reportesService.obtenerPedidos().subscribe({
+    next: (p: any) => {
+      this.pedidos = Array.isArray(p)
+        ? p
+        : p?.data || p?.pedidos || [];
+
+      this.totalPedidos = this.pedidos.length;
+
+      this.totalVentas = this.pedidos
+        .filter((pedido: any) => pedido.estado !== 'cancelado')
+        .reduce(
+          (acc: number, pedido: any) =>
+            acc + (Number(pedido.total) || 0),
+          0
+        );
+
       this.generarGraficoEstados();
-    });
+    },
+    error: (err) => {
+      console.error('Error pedidos:', err);
+    },
+  });
 
-    this.reportesService.obtenerProductos().subscribe((p) => {
-      this.productos = p;
-      this.totalProductos = p.length;
-    });
+  this.reportesService.obtenerProductos().subscribe({
+    next: (p: any) => {
+      console.log('PRODUCTOS =>', p);
 
-    this.reportesService.obtenerStock().subscribe((s) => {
-      this.stock = s;
-      this.totalStock = s.reduce(
-        (acc: number, item: any) => acc + item.cantidad,
+      this.productos = Array.isArray(p)
+        ? p
+        : p?.data || p?.productos || [];
+
+      this.totalProductos = this.productos.length;
+    },
+    error: (err) => {
+      console.error('Error productos:', err);
+    },
+  });
+
+  this.reportesService.obtenerStock().subscribe({
+    next: (s: any) => {
+      console.log('STOCK =>', s);
+
+      this.stock = Array.isArray(s)
+        ? s
+        : s?.data || s?.stock || [];
+
+      this.totalStock = this.stock.reduce(
+        (acc: number, item: any) =>
+          acc + (Number(item.cantidad) || 0),
         0
       );
-    });
+    },
+    error: (err) => {
+      console.error('Error stock:', err);
+    },
+  });
 
-    this.reportesService.obtenerPerfil().subscribe((u) => (this.perfil = u));
-  }
-
+  this.reportesService.obtenerPerfil().subscribe({
+    next: (u) => {
+      this.perfil = u;
+    },
+    error: (err) => {
+      console.error('Error perfil:', err);
+    },
+  });
+}
   // Filtros para pedidos
   get pedidosFiltrados(): any[] {
     if (!this.filtroPedidos.trim()) return this.pedidos;
