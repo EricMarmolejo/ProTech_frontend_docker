@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'node-20'
+    }
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         timeout(time: 30, unit: 'MINUTES')
@@ -11,6 +15,7 @@ pipeline {
         NODE_ENV = 'production'
         DOCKER_IMAGE_NAME = 'protech-frontend'
         DOCKER_REGISTRY = 'docker.io'
+        PATH = "${tool('node-20')}/bin:${PATH}"
     }
 
     stages {
@@ -24,7 +29,11 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo '========== Instalando dependencias de npm =========='
-                sh 'npm install'
+                sh '''
+                    npm --version
+                    node --version
+                    npm install
+                '''
             }
         }
 

@@ -257,20 +257,39 @@ Abre en el navegador: `http://localhost:8080`
 
 ### ⚙️ Configurar Herramientas en Jenkins
 
+**IMPORTANTE: Haz esto antes de crear el Job**
+
 En Jenkins ve a: `Manage Jenkins > Tools`
 
-**Agregar Node.js:**
+**1. Agregar Node.js:**
 1. Click `NodeJS Installations > Add NodeJS`
-2. Name: `node-20`
-3. Version: `20.11.0`
+2. Name: **`node-20`** (exactamente así)
+3. Version: `20.11.0` (o mayor)
 4. Check: `Install automatically`
-5. Save
+5. Click `Save`
 
-**Agregar Git (si no está):**
-1. Click `Git Installations > Add Git`
-2. Name: `Default`
-3. Path: Deja en blanco para detección automática
-4. Save
+**2. Dar permisos a Docker (CRÍTICO):**
+
+Desde terminal, agrega permisos al usuario Jenkins dentro del contenedor:
+
+```bash
+docker exec protech-jenkins usermod -aG docker jenkins
+```
+
+Luego reinicia Jenkins:
+
+```bash
+docker restart protech-jenkins
+```
+
+**3. Verificar que funciona:**
+
+```bash
+# Ver logs hasta que se reinicie completamente
+docker logs -f protech-jenkins
+
+# Busca: "Jenkins is fully up and running"
+```
 
 ### 🚀 Crear Job Pipeline
 
