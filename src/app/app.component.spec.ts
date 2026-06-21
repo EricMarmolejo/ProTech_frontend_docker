@@ -14,10 +14,10 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'catalogo-frontend' title`, () => {
+  it(`should have the 'Catalogo Virtual' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('catalogo-frontend');
+    expect(app.title).toEqual('Catalogo Virtual');
   });
 
   it('should render title', () => {
