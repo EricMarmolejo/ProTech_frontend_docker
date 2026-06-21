@@ -34,7 +34,7 @@ pipeline {
                     echo "Node version: $(node --version)"
                     echo "npm version: $(npm --version)"
                     npm ci --prefer-offline --no-audit
-                    npx ng build --configuration production
+                    npm run build -- --configuration production
                 '''
             }
         }
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 echo '========== Ejecutando tests =========='
                 catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                    sh 'npx ng test --watch=false --code-coverage --browsers=ChromeHeadless || true'
+                    sh 'npm run test -- --watch=false --code-coverage --browsers=ChromeHeadless || true'
                 }
             }
         }
