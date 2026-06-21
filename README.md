@@ -255,41 +255,89 @@ Abre en el navegador: `http://localhost:8080`
 - Elige "Install suggested plugins"
 - Crea usuario admin
 
+### ⚙️ Instalar Plugins Necesarios
+
+**ANTES de crear el Job**, instala estos plugins:
+
+1. Ve a Jenkins: `http://localhost:8080`
+2. Click `Manage Jenkins > Manage Plugins > Available`
+3. Busca e instala:
+   - ✅ **NodeJS Plugin**
+   - ✅ **Git Plugin** (probablemente ya está)
+   - ✅ **Pipeline** (probablemente ya está)
+
+4. Click `Download now and install after restart`
+5. Espera a que reinicie Jenkins
+
 ### ⚙️ Configurar Herramientas en Jenkins
 
-**IMPORTANTE: Haz esto antes de crear el Job**
+**DESPUÉS de instalar los plugins:**
 
 En Jenkins ve a: `Manage Jenkins > Tools`
 
 **1. Agregar Node.js:**
-1. Click `NodeJS Installations > Add NodeJS`
-2. Name: **`node-20`** (exactamente así)
-3. Version: `20.11.0` (o mayor)
-4. Check: `Install automatically`
-5. Click `Save`
+docker volume create jenkins_home
+
+docker run -d -p 8080:8080 -p 50000:50000 --name protech-jenkins -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -u root jenkins/jenkins:ltsdocker volume create jenkins_home
+
+docker run -d -p 8080:8080 -p 50000:50000 --name protech-jenkins -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -u root jenkins/jenkins:lts1. Busca `NodeJS Installations`
+2. Click `Add NodeJS`
+3. Name: **`node-20`** (exactamente así)
+4. Version: `20.11.0` (o mayor)
+5. Check: `Install automatically`
+6. Click `Save`
 
 **2. Dar permisos a Docker (CRÍTICO):**
 
-Desde terminal, agrega permisos al usuario Jenkins dentro del contenedor:
+Jenkins necesita acceso a Docker. Como Jenkins corre en un contenedor, necesitamos darle acceso al socket de Docker del host.
 
-```bash
-docker exec protech-jenkins usermod -aG docker jenkins
+**En Windows PowerShell**, elimina el contenedor anterior e instala con acceso correcto a Docker:
+
+```powershell
+# Primero, detener y eliminar el contenedor anterior
+docker stop protech-jenkins
+docker rm protech-jenkins
+
+# Crear volumen
+docker volume create jenkins_home
+
+# Ejecutar con acceso correcto a Docker
+docker run -d `
+  -p 8080:8080 `
+  -p 50000:50000 `
+  --name protech-jenkins `
+  -v jenkins_home:/var/jenkins_home `
+  -v /var/run/docker.sock:/var/run/docker.sock `
+  -v //var/run/docker.sock:/var/run/docker.sock `
+  --group-add 991 `
+  -u root `
+  jenkins/jenkins:lts
 ```
 
-Luego reinicia Jenkins:
+**O alternativa más simple (si tienes Docker Desktop en Windows):**
 
-```bash
+```powershell
+# Instalar docker-cli dentro de Jenkins
+docker exec protech-jenkins apt-get update && apt-get install -y docker.io
+
+# Agregar usuario jenkins al grupo docker
+docker exec protech-jenkins usermod -aG docker jenkins
+
+# Reiniciar
 docker restart protech-jenkins
 ```
 
 **3. Verificar que funciona:**
 
 ```bash
-# Ver logs hasta que se reinicie completamente
+# Ver logs
 docker logs -f protech-jenkins
 
-# Busca: "Jenkins is fully up and running"
+# Verificar que Docker está disponible en Jenkins
+docker exec protech-jenkins docker ps
 ```
+
+Debería listar los contenedores sin errores.
 
 ### 🚀 Crear Job Pipeline
 
