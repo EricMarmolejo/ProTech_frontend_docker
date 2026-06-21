@@ -1,4 +1,3 @@
-
 # 🛒 ProTech Frontend
 
 **ProTech Frontend** es la interfaz web de una tienda virtual moderna, desarrollada en Angular como parte del proyecto **ProTech**. Está diseñado para ofrecer una experiencia intuitiva tanto para administradores como para clientes, facilitando la navegación por productos, gestión de inventario y pedidos, y el control de usuarios.
@@ -323,7 +322,18 @@ docker exec protech-jenkins usermod -aG docker jenkins
 docker restart protech-jenkins
 ```
 
-**3. Verificar que funciona:**
+**3. Instalar Chromium para las pruebas (CRÍTICO):**
+
+Karma necesita un navegador para correr las pruebas, y el contenedor `jenkins/jenkins:lts` no trae ninguno instalado. Como tu `docker-compose.yml` ya corre Jenkins como `user: root`, puedes instalarlo así (una vez):
+
+```bash
+docker exec -u root protech-jenkins apt-get update
+docker exec -u root protech-jenkins apt-get install -y chromium
+```
+
+⚠️ Esto se pierde si el contenedor se borra (no vive en el volumen `jenkins_home`).
+
+**4. Verificar que funciona:**
 
 ```bash
 # Ver logs
