@@ -202,6 +202,7 @@ Si alguno no está instalado, instálalo antes de continuar.
 
 **2. Instalar Jenkins:**
 
+**En Linux/Mac:**
 ```bash
 # Crear volumen para persistencia
 docker volume create jenkins_home
@@ -213,17 +214,36 @@ docker pull jenkins/jenkins:lts
 docker run -d \
   -p 8080:8080 \
   -p 50000:50000 \
-  --name jenkins \
+  --name protech-jenkins \
   -v jenkins_home:/var/jenkins_home \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -u root \
   jenkins/jenkins:lts
 ```
 
+**En Windows PowerShell:**
+```powershell
+# Crear volumen para persistencia
+docker volume create jenkins_home
+
+# Descargar imagen (si no la tienes)
+docker pull jenkins/jenkins:lts
+
+# Ejecutar contenedor
+docker run -d `
+  -p 8080:8080 `
+  -p 50000:50000 `
+  --name protech-jenkins `
+  -v jenkins_home:/var/jenkins_home `
+  -v /var/run/docker.sock:/var/run/docker.sock `
+  -u root `
+  jenkins/jenkins:lts
+```
+
 **3. Obtener contraseña inicial:**
 
 ```bash
-docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+docker exec protech-jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 ```
 
 Copia la contraseña que aparece.
@@ -293,24 +313,36 @@ Tiempo estimado: **10-15 minutos** (primera vez con caché)
 
 ### 📋 Si Jenkins ya estaba ejecutándose
 
+**Ver contenedores Jenkins existentes:**
+
 ```bash
-# Ver si Jenkins está corriendo
-docker ps | grep jenkins
+# Ver todos los contenedores
+docker ps -a
+
+# Ver solo protech-jenkins
+docker ps -a | findstr protech-jenkins
+```
+
+**Comandos para gestionar protech-jenkins:**
+
+```powershell
+# Obtener contraseña inicial
+docker exec protech-jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
 # Si está detenido, reiniciarlo
-docker start jenkins
+docker start protech-jenkins
 
-# Ver logs
-docker logs -f jenkins
-
-# Obtener contraseña si la olvidas
-docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+# Ver logs en tiempo real
+docker logs -f protech-jenkins
 
 # Detener Jenkins
-docker stop jenkins
+docker stop protech-jenkins
 
-# Eliminar contenedor (persiste datos en volumen)
-docker rm jenkins
+# Eliminar contenedor (los datos persisten en volumen)
+docker rm protech-jenkins
+
+# Eliminar volumen (CUIDADO: borra todos los datos de Jenkins)
+docker volume rm jenkins_home
 ```
 
 ---
