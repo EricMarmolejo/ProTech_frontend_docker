@@ -40,7 +40,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo '========== Construyendo aplicación Angular =========='
-                sh 'npx ng build'
+                sh 'npm run build'
             }
         }
 

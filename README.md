@@ -276,11 +276,7 @@ Abre en el navegador: `http://localhost:8080`
 En Jenkins ve a: `Manage Jenkins > Tools`
 
 **1. Agregar Node.js:**
-docker volume create jenkins_home
-
-docker run -d -p 8080:8080 -p 50000:50000 --name protech-jenkins -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -u root jenkins/jenkins:ltsdocker volume create jenkins_home
-
-docker run -d -p 8080:8080 -p 50000:50000 --name protech-jenkins -v jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -u root jenkins/jenkins:lts1. Busca `NodeJS Installations`
+Busca `NodeJS Installations`
 2. Click `Add NodeJS`
 3. Name: **`node-20`** (exactamente así)
 4. Version: `20.11.0` (o mayor)
