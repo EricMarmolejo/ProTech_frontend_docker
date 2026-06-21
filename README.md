@@ -143,6 +143,178 @@ src/
 
 ---
 
+## 🐳 Docker
+
+### Construir imagen Docker
+
+```bash
+docker build -t protech-frontend .
+```
+
+### Ejecutar contenedor
+
+```bash
+docker run -p 80:80 protech-frontend
+```
+
+Accede a: `http://localhost`
+
+### Usando Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+Accede a Jenkins: `http://localhost:8080`
+
+---
+
+## 🔄 Integración Continua con Jenkins
+
+Este proyecto incluye **Jenkinsfile** para automatizar:
+- Build de Angular
+- Tests unitarios
+- Build y prueba de Docker
+- Push automático a Docker Registry (rama main)
+
+### ⚙️ Configuración Inicial
+
+**Requisitos:**
+- Jenkins v2.387+
+- Node.js v20+
+- Docker
+
+**1. Verificar requisitos:**
+
+```bash
+# Verificar Docker
+docker --version
+
+# Verificar que Docker está corriendo
+docker ps
+
+# Verificar Node.js (en la máquina o en Jenkins)
+node --version
+npm --version
+```
+
+Si alguno no está instalado, instálalo antes de continuar.
+
+**2. Instalar Jenkins:**
+
+```bash
+# Crear volumen para persistencia
+docker volume create jenkins_home
+
+# Descargar imagen (si no la tienes)
+docker pull jenkins/jenkins:lts
+
+# Ejecutar contenedor
+docker run -d \
+  -p 8080:8080 \
+  -p 50000:50000 \
+  --name jenkins \
+  -v jenkins_home:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -u root \
+  jenkins/jenkins:lts
+```
+
+**3. Obtener contraseña inicial:**
+
+```bash
+docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+```
+
+Copia la contraseña que aparece.
+
+**4. Acceder a Jenkins:**
+
+Abre en el navegador: `http://localhost:8080`
+- Pega la contraseña
+- Elige "Install suggested plugins"
+- Crea usuario admin
+
+### ⚙️ Configurar Herramientas en Jenkins
+
+En Jenkins ve a: `Manage Jenkins > Tools`
+
+**Agregar Node.js:**
+1. Click `NodeJS Installations > Add NodeJS`
+2. Name: `node-20`
+3. Version: `20.11.0`
+4. Check: `Install automatically`
+5. Save
+
+**Agregar Git (si no está):**
+1. Click `Git Installations > Add Git`
+2. Name: `Default`
+3. Path: Deja en blanco para detección automática
+4. Save
+
+### 🚀 Crear Job Pipeline
+
+1. Click `+ Nueva Tarea` (o `New Item`)
+2. Nombre: `ProTech-Frontend-CI`
+3. Tipo: `Pipeline`
+4. Click `OK`
+
+**Configurar:**
+
+En **Pipeline** section:
+```
+Definition: Pipeline script from SCM
+SCM: Git
+Repository URL: https://github.com/tu-usuario/ProTech_frontend_docker.git
+Branch Specifier: */main
+Script Path: Jenkinsfile
+```
+
+En **Build Triggers** (opcional):
+```
+Check: Poll SCM
+Schedule: H H * * *
+```
+
+Click **Save**
+
+### ▶️ Ejecutar Build
+
+1. Abre el job `ProTech-Frontend-CI`
+2. Click `Build Now`
+3. Ve a `Console Output` para ver los logs
+
+**Pipeline stages:**
+```
+Checkout → Install → Build → Tests → Docker Build → Test Docker → Push
+```
+
+Tiempo estimado: **10-15 minutos** (primera vez con caché)
+
+### 📋 Si Jenkins ya estaba ejecutándose
+
+```bash
+# Ver si Jenkins está corriendo
+docker ps | grep jenkins
+
+# Si está detenido, reiniciarlo
+docker start jenkins
+
+# Ver logs
+docker logs -f jenkins
+
+# Obtener contraseña si la olvidas
+docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+
+# Detener Jenkins
+docker stop jenkins
+
+# Eliminar contenedor (persiste datos en volumen)
+docker rm jenkins
+```
+
+---
+
 ## 🤝 Contribuir
 
 ¿Quieres contribuir al proyecto? ¡Sigue estos pasos!
