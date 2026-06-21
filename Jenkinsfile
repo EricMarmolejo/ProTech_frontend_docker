@@ -15,7 +15,7 @@ pipeline {
         NODE_ENV = 'production'
         DOCKER_IMAGE_NAME = 'protech-frontend'
         DOCKER_REGISTRY = 'docker.io'
-        PATH = "${tool('node-20')}/bin:${PATH}"
+        CI = 'true'
     }
 
     stages {
@@ -26,21 +26,16 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install & Build') {
             steps {
-                echo '========== Instalando dependencias de npm =========='
+                echo '========== Instalando dependencias y compilando =========='
                 sh '''
-                    npm --version
-                    node --version
-                    npm install
+                    set -e
+                    echo "Node version: $(node --version)"
+                    echo "npm version: $(npm --version)"
+                    npm ci --prefer-offline --no-audit
+                    ./node_modules/.bin/ng build --configuration production
                 '''
-            }
-        }
-
-        stage('Build') {
-            steps {
-                echo '========== Construyendo aplicación Angular =========='
-                sh 'export PATH=$PWD/node_modules/.bin:$PATH && npm run build'
             }
         }
 
@@ -48,7 +43,7 @@ pipeline {
             steps {
                 echo '========== Ejecutando tests =========='
                 catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                    sh 'npm test -- --watch=false --code-coverage || true'
+                    sh './node_modules/.bin/ng test --watch=false --code-coverage --browsers=ChromeHeadless || true'
                 }
             }
         }
@@ -56,27 +51,31 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo '========== Construyendo imagen Docker =========='
-                script {
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} ."
-                    sh "docker build -t ${DOCKER_IMAGE_NAME}:latest ."
-                }
+                sh '''
+                    docker build -t ${DOCKER_IMAGE_NAME}:${BUILD_NUMBER} .
+                    docker build -t ${DOCKER_IMAGE_NAME}:latest .
+                    docker images | grep ${DOCKER_IMAGE_NAME}
+                '''
             }
         }
 
         stage('Test Docker Container') {
             steps {
                 echo '========== Probando contenedor Docker =========='
-                script {
-                    try {
-                        sh "docker run --rm -p 8089:80 --name protech-test-${BUILD_NUMBER} -d ${DOCKER_IMAGE_NAME}:latest"
-                        sh 'sleep 5'
-                        sh "docker stop protech-test-${BUILD_NUMBER} || true"
-                        echo 'Contenedor ejecutado correctamente'
-                    } catch (Exception e) {
-                        echo "Error en test del contenedor: ${e.message}"
-                        currentBuild.result = 'UNSTABLE'
-                    }
-                }
+                sh '''
+                    set -e
+                    TEST_CONTAINER_ID=$(docker run --rm -p 8089:80 -d ${DOCKER_IMAGE_NAME}:latest)
+                    echo "Container ID: $TEST_CONTAINER_ID"
+                    sleep 5
+                    HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:8089 || echo "error")
+                    echo "HTTP Response: $HTTP_CODE"
+                    docker stop $TEST_CONTAINER_ID || true
+                    if [ "$HTTP_CODE" = "200" ]; then
+                        echo "✅ Contenedor respondiendo correctamente"
+                    else
+                        echo "⚠️ Respuesta no esperada: $HTTP_CODE"
+                    fi
+                '''
             }
         }
 
@@ -103,9 +102,10 @@ pipeline {
     post {
         always {
             echo '========== Limpiando recursos =========='
-            script {
-                sh 'docker image prune -f || true'
-            }
+            sh '''
+                docker image prune -f || true
+                docker container prune -f || true
+            '''
         }
         success {
             echo '✅ Pipeline completado exitosamente'
