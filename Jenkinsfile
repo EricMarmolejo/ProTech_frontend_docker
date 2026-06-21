@@ -34,7 +34,7 @@ pipeline {
                     echo "Node version: $(node --version)"
                     echo "npm version: $(npm --version)"
                     npm ci --prefer-offline --no-audit
-                    ./node_modules/.bin/ng build --configuration production
+                    node node_modules/@angular/cli/bin/ng.js build --configuration production
                 '''
             }
         }
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 echo '========== Ejecutando tests =========='
                 catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                    sh './node_modules/.bin/ng test --watch=false --code-coverage --browsers=ChromeHeadless || true'
+                    sh 'node node_modules/@angular/cli/bin/ng.js test --watch=false --code-coverage --browsers=ChromeHeadless || true'
                 }
             }
         }
