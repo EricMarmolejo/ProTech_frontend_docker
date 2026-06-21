@@ -29,11 +29,14 @@ pipeline {
         stage('Install & Build') {
             steps {
                 echo '========== Instalando dependencias y compilando =========='
-                sh '''
+                bash '''
                     set -e
+                    export PATH=$PATH:$(pwd)/node_modules/.bin
                     echo "Node version: $(node --version)"
                     echo "npm version: $(npm --version)"
-                    npm ci --prefer-offline --no-audit
+                    npm ci --prefer-offline --no-audit --include=dev
+                    echo "Verificando instalación de Angular CLI:"
+                    ls -la node_modules/.bin/ | grep ng
                     npm run build -- --configuration production
                 '''
             }
@@ -43,7 +46,10 @@ pipeline {
             steps {
                 echo '========== Ejecutando tests =========='
                 catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
-                    sh 'npm run test -- --watch=false --code-coverage --browsers=ChromeHeadless || true'
+                    bash '''
+                        export PATH=$PATH:$(pwd)/node_modules/.bin
+                        npm run test -- --watch=false --code-coverage --browsers=ChromeHeadless || true
+                    '''
                 }
             }
         }
