@@ -109,15 +109,3 @@ pipeline {
         }
     }
 }
-
-        success {
-            echo '✅ Pipeline completado exitosamente'
-        }
-        failure {
-            echo '❌ Pipeline falló'
-        }
-        unstable {
-            echo '⚠️ Pipeline inestable (algunas pruebas fallaron)'
-        }
-    }
-}
