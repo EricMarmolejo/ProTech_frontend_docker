@@ -40,7 +40,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo '========== Construyendo aplicación Angular =========='
-                sh 'npm run build'
+                sh 'export PATH=$PWD/node_modules/.bin:$PATH && npm run build'
             }
         }
 
